@@ -2,6 +2,7 @@
 
 @section('page-title', 'К5')
 @section('title', 'К5')
+@section('concrete-car', 'K5')
 
 @section('content')
     <div class="flex-1 grid grid-cols-1 lg:grid-cols-5 border-b w-full">
