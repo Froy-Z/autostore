@@ -36,6 +36,12 @@ class PagesController extends Controller
         return view('pages.clients');
     }
 
+    public function articles(): Factory|View|Application
+    {
+        $articles = Article::latest('published_at')->whereNotNull('published_at')->get();
+        return view('pages.articles', ['articles' => $articles]);
+    }
+
 }
 
 
