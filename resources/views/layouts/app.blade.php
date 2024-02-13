@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     @vite(['resources/css/app.scss', 'resources/js/app.js'])
 
-    <title>Рога и Сила - @section('page-title')Главная страница@show</title>
+    <title>{{ config('app.name') }} - @section('page-title')Главная страница@show</title>
     <link href="/assets/favicon.ico" rel="shortcut icon" type="image/x-icon">
 </head>
 <body class="bg-white text-gray-600 font-sans leading-normal text-base tracking-normal flex min-h-screen flex-col">
