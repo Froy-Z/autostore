@@ -1,8 +1,3 @@
-@php
-$date = $article->published_at ?? '';
-$formattedDate = $date ? \Carbon\Carbon::parse($date)->format('d M Y') : null;
-@endphp
-
 <div class="w-full flex">
     <div class="h-48 lg:h-auto w-32 sm:w-60 lg:w-32 xl:w-48 flex-none text-center overflow-hidden">
         <a class="block w-full h-full hover:opacity-75" href="article.html"><img src="/assets/pictures/car_rio_new.png" class="bg-white bg-opacity-25 w-full h-full object-contain" alt=""></a>
@@ -20,7 +15,7 @@ $formattedDate = $date ? \Carbon\Carbon::parse($date)->format('d M Y') : null;
                 <span class="text-sm text-white italic rounded bg-orange px-2">Теги</span>
             </div>
             <div class="flex items-center">
-                <p class="text-sm text-gray-400 italic">{{ $formattedDate }}</p>
+                <p class="text-sm text-gray-400 italic">{{ isset($article->published_at) ? $article->published_at->format('d M Y') : '' }}</p>
             </div>
         </div>
     </div>
