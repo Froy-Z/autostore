@@ -1,8 +1,3 @@
-@php
-
-@endphp
-
-
 <section class="news-block-inverse px-4 py-4">
     <div>
         <p class="inline-block text-3xl text-white font-bold mb-4">Новости</p>
@@ -10,7 +5,7 @@
     </div>
     <div class="grid md:grid-cols-1 lg:grid-cols-3 gap-6">
         @foreach($articles as $article)
-            @include('components.panels.homepage.news_item', ['article' => $article])
+            <x-panels.homepage.news_item :article="$article" />
         @endforeach
     </div>
 </section>
