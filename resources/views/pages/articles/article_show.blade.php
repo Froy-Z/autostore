@@ -4,7 +4,7 @@
 @section('title', $article->title)
 
 @section('content')
-    @include('components.panels.articles.news_concrete')
+    <x-panels.articles.news_concrete />
 @endsection
 
 
