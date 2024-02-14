@@ -28,7 +28,7 @@ class ArticlesController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Article $article)
     {
         //
     }
@@ -38,7 +38,7 @@ class ArticlesController extends Controller
      */
     public function show(Article $article)
     {
-        //
+        return view('pages.articles.article_store', ['article' => $article]);
     }
 
     /**
