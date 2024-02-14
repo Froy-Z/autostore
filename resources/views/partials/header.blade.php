@@ -52,7 +52,7 @@
                 </button>
             </form>
             @section('navigation-menu')
-                @include('components.panels.header.category_menu')
+                <x-panels.header.category_menu />
             @show
         </div>
     </div>

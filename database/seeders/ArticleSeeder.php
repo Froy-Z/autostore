@@ -13,6 +13,8 @@ class ArticleSeeder extends Seeder
      */
     public function run(): void
     {
-        Article::factory()->count(5)->create();
+        do {
+            Article::factory()->count(5)->create();
+        } while (Article::whereNotNull('published_at')->count() < 5);
     }
 }

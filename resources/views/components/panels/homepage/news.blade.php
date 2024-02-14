@@ -5,7 +5,7 @@
     </div>
     <div class="grid md:grid-cols-1 lg:grid-cols-3 gap-6">
         @foreach($articles as $article)
-            @include('components.panels.homepage.news_item', ['article' => $article])
+            <x-panels.homepage.news_item :article="$article" />
         @endforeach
     </div>
 </section>

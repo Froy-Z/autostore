@@ -1,8 +1,3 @@
-@php
-$date = $article->published_at;
-$formattedDate = \Carbon\Carbon::parse($date)->format('d M Y')
-@endphp
-
 <div class="w-full flex">
     <div class="h-48 lg:h-auto w-32 sm:w-60 lg:w-32 xl:w-48 flex-none text-center overflow-hidden">
         <a class="block w-full h-full hover:opacity-75" href="{{ route('article_concrete', ['article' => $article]) }}"><img src="assets/pictures/car_soul.png" class="bg-white bg-opacity-25 w-full h-full  object-contain" alt=""></a>
@@ -15,13 +10,13 @@ $formattedDate = \Carbon\Carbon::parse($date)->format('d M Y')
             <p class="text-gray-300 text-base">
                 <a class="hover:text-orange" href="{{ route('article_concrete', ['article' => $article]) }}">{{ $article->description }}</a>
             </p>
-            </div>
-            <div>
-                <span class="text-sm text-white italic rounded bg-orange px-2">Это</span>
-                <span class="text-sm text-white italic rounded bg-orange px-2">Теги</span>
-            </div>
-            <div class="flex items-center">
-            <p class="text-sm text-gray-400 italic">{{ $formattedDate }}</p>
+        </div>
+        <div>
+            <span class="text-sm text-white italic rounded bg-orange px-2">Это</span>
+            <span class="text-sm text-white italic rounded bg-orange px-2">Теги</span>
+        </div>
+        <div class="flex items-center">
+            <p class="text-sm text-gray-400 italic">{{ $article->published_at->format('d M Y') }}</p>
         </div>
     </div>
 </div>

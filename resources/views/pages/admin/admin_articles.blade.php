@@ -5,6 +5,6 @@
 
 @section('content')
     <main class="flex-1 container mx-auto bg-white">
-        @include('components.panels.articles.news', ['articles' => $articles])
+        <x-panels.articles.news :articles="$articles" />
     </main>
 @endsection

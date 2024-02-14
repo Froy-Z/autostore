@@ -111,6 +111,6 @@
                 </div>
             </div>
         </section>
-        @include('components.panels.homepage.news', ['articles' => $articles])
+        <x-panels.homepage.news :articles="$articles" />
     </main>
 @endsection
