@@ -11,8 +11,9 @@
 <body class="bg-white text-gray-600 font-sans leading-normal text-base tracking-normal flex min-h-screen flex-col">
 <div class="wrapper flex flex-1 flex-col">
         @include('components.panels.header')
+        @yield('post-menu')
             <main class="flex-1 container mx-auto bg-white">
-                @yield('content')
+                @yield('template-content')
             </main>
         @include('components.panels.footer')
     </div>
