@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('navigation-menu')
-    @include('components.panels.admin.navigation_menu')
+    <x-panels.admin.navigation_menu/>
 @endsection
 
 @section('template-content')
