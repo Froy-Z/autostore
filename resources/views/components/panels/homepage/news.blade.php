@@ -4,6 +4,7 @@
         <span class="inline-block text-gray-200 pl-1"> / <a href="{{ route('articles') }}" class="inline-block pl-1 text-gray-200 hover:text-orange"><b>Все</b></a></span>
     </div>
     <div class="grid md:grid-cols-1 lg:grid-cols-3 gap-6">
+        @props(['articles'])
         @foreach($articles as $article)
             <x-panels.homepage.news_item :article="$article" />
         @endforeach
