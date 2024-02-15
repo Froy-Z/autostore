@@ -4,5 +4,5 @@
 @section('title', 'Условия продаж')
 
 @section('content')
-    @include('components.panels.static_demo_content')
+    @include('partials.static_demo_content')
 @endsection
