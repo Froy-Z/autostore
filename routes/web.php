@@ -16,9 +16,10 @@ Route::get('/sale',     [PagesController::class, 'sale'])->name('sale');
 Route::get('/finance',  [PagesController::class, 'finance'])->name('finance');
 Route::get('/clients',  [PagesController::class, 'clients'])->name('clients');
 Route::get('/articles',  [PagesController::class, 'articles'])->name('articles');
-Route::get('/articles/{article}',  [ArticlesController::class, 'show'])->name('article.show');
+Route::get('/articles/{slug}',  [ArticlesController::class, 'show'])->name('article.show');
 
 Route::prefix('admin')->name('admin.')->group(function (Router $router) {
     $router->get('/', [AdminPagesController::class, 'admin'])->name('admin');
+    $router->get('articles/view', [ArticlesController::class, 'view'])->name('view');
     $router->resource('articles', ArticlesController::class);
 });

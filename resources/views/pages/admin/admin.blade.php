@@ -18,13 +18,13 @@
                 </div>
             </div>
             <div class="bg-white w-full border border-gray-100 rounded overflow-hidden shadow-lg hover:shadow-2xl pt-4">
-                <a class="flex w-full h-40 text-orange justify-center hover:opacity-75" href="admin_cars.html">
+                <a class="flex w-full h-40 text-orange justify-center hover:opacity-75" href="{{ route('admin.view') }}">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-40 w-40" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
                     </svg>
                 </a>
                 <div class="px-6 py-4 text-center">
-                    <div class="text-black font-bold text-xl mb-2"><a class="hover:text-orange" href="admin_articles.html">Управление новостями</a></div>
+                    <div class="text-black font-bold text-xl mb-2"><a class="hover:text-orange" href="{{ route('admin.view') }}">Управление новостями</a></div>
                 </div>
             </div>
         </div>
