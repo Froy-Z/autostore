@@ -3,6 +3,7 @@
         <li>
             <p class="text-xl text-black font-bold mb-4">Информация</p>
             <ul class="space-y-2">
+                @props(['menu'])
                 @foreach($menu as $item)
                     <li><a class="@if (request()->routeIs($item['route'])) text-orange cursor-default @else hover:text-orange @endif"
                            href="{{ route($item['route']) }}">{{ $item['title'] }}</a></li>
