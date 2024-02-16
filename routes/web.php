@@ -1,18 +1,25 @@
 <?php
 
+use App\Http\Controllers\Admin\AdminPagesController;
+use App\Http\Controllers\Admin\ArticlesController;
+use App\Http\Controllers\CatalogController;
+use App\Http\Controllers\PagesController;
+use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\Route;
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "web" middleware group. Make something great!
-|
-*/
+Route::get('/', [PagesController::class, 'home'])->name('home');
+//Route::get('/catalog', [CatalogController::class, 'catalog'])->name('catalog');
+//Route::get('/product/{product}', [CatalogController::class, 'product'])->name('product');
+Route::get('/about',    [PagesController::class, 'about'])->name('about');
+Route::get('/contacts', [PagesController::class, 'contacts'])->name('contacts');
+Route::get('/sale',     [PagesController::class, 'sale'])->name('sale');
+Route::get('/finance',  [PagesController::class, 'finance'])->name('finance');
+Route::get('/clients',  [PagesController::class, 'clients'])->name('clients');
+Route::get('/articles',  [PagesController::class, 'articles'])->name('articles');
+Route::get('/articles/{slug}',  [ArticlesController::class, 'show'])->name('article.show');
 
-Route::get('/', function () {
-    return view('welcome');
+Route::prefix('admin')->name('admin.')->group(function (Router $router) {
+    $router->get('/', [AdminPagesController::class, 'admin'])->name('admin');
+    $router->get('articles/view', [ArticlesController::class, 'view'])->name('view');
+    $router->resource('articles', ArticlesController::class);
 });
