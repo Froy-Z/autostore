@@ -13,8 +13,10 @@ class ArticleSeeder extends Seeder
      */
     public function run(): void
     {
-        do {
-            Article::factory()->count(5)->create();
-        } while (Article::whereNotNull('published_at')->count() < 5);
+        Article::factory()->count(10)->create();
+        if (($published = Article::whereNotNull('published_at')->count()) < 5) {
+            $unpublishedArticles = Article::whereNull('published_at')->limit(5 - $published);
+            $unpublishedArticles->update(['published_at' => now()]);
+        }
     }
 }
