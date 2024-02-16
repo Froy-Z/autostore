@@ -23,6 +23,7 @@
             </tr>
         </thead>
         <tbody>
+            @props(['articles'])
             @foreach($articles as $article)
                 <x-panels.admin.admin_articles_table_item :article="$article" />
             @endforeach

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ArticleRequest;
 use App\Models\Article;
+use App\Services\SlugService;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Http\RedirectResponse;
@@ -45,13 +46,13 @@ class ArticlesController extends Controller
     public function store(ArticleRequest $request): RedirectResponse
     {
         try {
-        $article = $request->validated();
-        $article['slug'] = Str::slug($article['title']);
-        Article::create($article);
-        } catch (UniqueConstraintViolationException $e) {
-            return back()->with('error_messages', ['Новость не уникальна']);
+            $slug = SlugService::generateSlug($request->title);
+            Article::create(['slug' => $slug] + $request->validated());
+        } catch (\Exception $e) {
+            return redirect()
+                ->route('admin.articles.create')
+                ->with('error_messages', ['При создании новости произошла ошибка']);
         }
-
         return redirect()
             ->route('admin.view')
             ->with('success_messages', ['Новость успешно создана']);

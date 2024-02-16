@@ -23,16 +23,22 @@ class ArticleRequest extends FormRequest
     {
         return [
             'slug' => [
-                'nullable',
+                'sometimes',
+                'required_if:title',
                 'string',
                 'regex:/^[a-zA-Z0-9_-]+$/u',
                 'unique:articles.slug',
                 'max:255',
             ],
-            'title' => 'required', 'string', 'min:5', 'max:100',
-            'description' => 'required', 'string', 'max:255',
-            'body' => 'required', 'string',
-            'published_at' => 'sometimes', 'data', 'date_format:Y-m-d H:i:s'
+            'title' => [
+                'required',
+                'string',
+                'min:5',
+                'max:100'
+            ],
+            'description' => ['required', 'string', 'max:255'],
+            'body' => 'required|string',
+            'published_at' => ['sometimes', 'date', 'date_format:Y-m-d H:i:s'],
         ];
     }
 }

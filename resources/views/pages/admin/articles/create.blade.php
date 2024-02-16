@@ -1,4 +1,4 @@
-@php use App\Models\Article; @endphp
+@php use App\Models\Article;@endphp
 @extends('layouts.admin')
 
 @section('page-title', "Веб-форма")
@@ -7,8 +7,11 @@
 @section('content')
     <main class="flex-1 container mx-auto bg-white">
 
-        <x-panels.messages.form_validation_errors />
-        <x-panels.messages.flashes />
+        @if(session()->has('error_messages'))
+            <x-panels.messages.error :messages="session('error_messages', [])" />
+        @endif
+
+        <x-panels.messages.form_validation_errors :messages="$messages ?? '' " />
 
         <form action="{{ route('admin.articles.store') }}" method="post">
             <div class="mt-8 max-w-md">

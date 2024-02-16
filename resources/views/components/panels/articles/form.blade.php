@@ -13,7 +13,7 @@
     @enderror
 </div>
 <div class="block">
-    <label for="fieldArticleDescription" class="text-gray-700 font-bold">Название новости</label>
+    <label for="fieldArticleDescription" class="text-gray-700 font-bold">Краткое описание новости</label>
     <input id="fieldArticleDescription"
            type="text"
            name="description"
@@ -31,7 +31,7 @@
               type="text"
               name="body"
               class="mt-1 block w-full rounded-md @error('body') border-red-600 @else border-gray-300 @enderror shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-              rows="3">{{ old('description' ,$article->body) ?? '' }} </textarea>
+              rows="3">{{ old('body' ,$article->body) ?? '' }} </textarea>
     @error('body')
         <span class="text-xs italic text-red-600">{{ $message }}</span>
     @enderror
