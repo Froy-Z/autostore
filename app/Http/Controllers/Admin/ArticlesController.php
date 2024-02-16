@@ -3,38 +3,63 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ArticleRequest;
 use App\Models\Article;
+use App\Services\SlugService;
+use GuzzleHttp\Exception\RequestException;
+use Illuminate\Database\UniqueConstraintViolationException;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class ArticlesController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Список статей для пользователей и администратора в разных стилях
      */
     public function index()
     {
         $articles = Article::latest('published_at')->get();
-        return view('pages.admin.admin_articles', ['articles' => $articles]);
+        return view('pages.admin.articles.index', ['articles' => $articles]);
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Дополнительный GET запрос для вывода списка статей в табличной форме для администратора
+     */
+    public function view()
+    {
+        $articles = Article::oldest('id')->get();
+        return view('pages.admin.articles.view', ['articles' => $articles]);
+    }
+
+    /**
+     * Показать форму создания статьи
      */
     public function create()
     {
-        //
+        return view('pages.admin.articles.create');
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Добавление статьи в БД на основе POST запроса
      */
-    public function store(Request $request)
+    public function store(ArticleRequest $request): RedirectResponse
     {
-        //
+        try {
+            $slug = SlugService::generateSlug($request->title);
+            Article::create(['slug' => $slug] + $request->validated());
+        } catch (\Exception $e) {
+            return redirect()
+                ->route('admin.articles.create')
+                ->with('error_messages', ['При создании новости произошла ошибка']);
+        }
+        return redirect()
+            ->route('admin.view')
+            ->with('success_messages', ['Новость успешно создана']);
     }
 
     /**
-     * Display the specified resource.
+     * Отображение конкретной статьи GET запросом
      */
     public function show(Article $article)
     {
@@ -42,7 +67,7 @@ class ArticlesController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Показать форму редактирования статьи GET запросом
      */
     public function edit(Article $article)
     {
@@ -50,7 +75,7 @@ class ArticlesController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * PUT/PATCH обновление статьи
      */
     public function update(Request $request, Article $article)
     {
@@ -58,7 +83,7 @@ class ArticlesController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Удаление статьи DELETE запросом
      */
     public function destroy(Article $article)
     {

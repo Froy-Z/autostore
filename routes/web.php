@@ -20,5 +20,6 @@ Route::get('/articles/{slug}',  [ArticlesController::class, 'show'])->name('arti
 
 Route::prefix('admin')->name('admin.')->group(function (Router $router) {
     $router->get('/', [AdminPagesController::class, 'admin'])->name('admin');
+    $router->get('articles/view', [ArticlesController::class, 'view'])->name('view');
     $router->resource('articles', ArticlesController::class);
 });
