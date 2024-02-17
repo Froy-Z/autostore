@@ -5,12 +5,10 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ArticleRequest;
 use App\Models\Article;
+use App\Services\FlashMessage;
 use App\Services\SlugService;
-use GuzzleHttp\Exception\RequestException;
-use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
 
 class ArticlesController extends Controller
 {
@@ -49,13 +47,13 @@ class ArticlesController extends Controller
             $slug = SlugService::generateSlug($request->title);
             Article::create(['slug' => $slug] + $request->validated());
         } catch (\Exception $e) {
-            return redirect()
-                ->route('admin.articles.create')
-                ->with('error_messages', ['При создании новости произошла ошибка']);
+            $flashMessage = new FlashMessage();
+            $flashMessage->error('При создании новости произошла ошибка');
+            return redirect()->route('admin.articles.create');
         }
-        return redirect()
-            ->route('admin.view')
-            ->with('success_messages', ['Новость успешно создана']);
+        $flashMessage = new FlashMessage();
+        $flashMessage->success('Новость успешно создана');
+        return redirect()->route('admin.view');
     }
 
     /**

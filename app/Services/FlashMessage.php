@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use Illuminate\Session\SessionManager;
+use Illuminate\Session\Store;
 use Illuminate\Support\Collection;
 
 class FlashMessage
@@ -28,10 +30,10 @@ class FlashMessage
 
     private function flash(string $type, Collection $collection): void
     {
-        $this->storage()->flush($type, $collection);
+        $this->storage()->flash($type, $collection);
     }
 
-    private function storage()
+    private function storage(): SessionManager|Store
     {
         return session();
     }
