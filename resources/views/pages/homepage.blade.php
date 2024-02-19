@@ -53,7 +53,7 @@
                 </div>
             </div>
         </section>
-        @if(isset($cars))
+        @if($cars->isNotEmpty())
             <x-panels.homepage.new_models :cars="$cars" />
         @endif
         <x-panels.homepage.news :articles="$articles" />
