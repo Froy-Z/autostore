@@ -6,7 +6,7 @@ use Illuminate\Session\SessionManager;
 use Illuminate\Session\Store;
 use Illuminate\Support\Collection;
 
-class FlashMessage
+class FlashMessage implements FlashMessageContract
 {
     public function success(array|string $messages): void
     {

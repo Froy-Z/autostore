@@ -7,9 +7,9 @@
         <div class="text-black font-bold text-xl mb-2"><a class="hover:text-orange" href="{{ route('product', $car->id) }}">{{ $car->name }}</a>
         </div>
         <p class="text-grey-darker text-base">
-            <span class="inline-block"><x-panels.format_price :price="$car->price"/></span>
+            <span class="inline-block"><x-price :price="$car->price"/></span>
             @isset ($car->old_price)
-                <span class="inline-block line-through pl-6 text-gray-400"><x-panels.format_price :price="$car->old_price"/></span>
+                <span class="inline-block line-through pl-6 text-gray-400"><x-price :price="$car->old_price"/></span>
             @endisset
         </p>
     </div>
