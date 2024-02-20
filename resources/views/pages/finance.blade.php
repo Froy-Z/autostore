@@ -1,8 +1,5 @@
-@extends('layouts.inner_two_columns')
-
-@section('page-title', 'Финансовый отдел')
-@section('title', 'Финансовый отдел')
-
-@section('content')
-    @include('partials.static_demo_content')
-@endsection
+<x-layouts.inner_two_columns pageTitle="Финансовый отдел" title="Финансовый отдел">
+    <x-slot:content>
+        @include('partials.static_demo_content')
+    </x-slot:content>
+</x-layouts.inner_two_columns>

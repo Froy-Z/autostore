@@ -41,4 +41,16 @@ class ArticleRequest extends FormRequest
             'published_at' => ['sometimes', 'date', 'date_format:Y-m-d H:i:s'],
         ];
     }
+
+    public function messages()
+    {
+        return parent::messages();
+    }
+
+    public function attributes()
+    {
+        return parent::attributes();
+    }
+
+
 }
