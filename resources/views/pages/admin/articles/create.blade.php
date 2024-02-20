@@ -7,10 +7,7 @@
 @section('content')
     <main class="flex-1 container mx-auto bg-white">
 
-        @if(session()->has('error_messages'))
-            <x-panels.messages.error :messages="session('error_messages', [])" />
-        @endif
-
+        <x-panels.messages.flashes />
         <x-panels.messages.form_validation_errors :messages="$messages ?? '' " />
 
         <form action="{{ route('admin.articles.store') }}" method="post">

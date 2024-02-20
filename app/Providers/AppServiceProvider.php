@@ -44,5 +44,52 @@ class AppServiceProvider extends ServiceProvider
                 ],
             ]);
         });
+
+//        View::composer(['components.panels.cars.car_specification'], function (\Illuminate\View\View $view) {
+//            $view->with('specifications', [
+//                [
+//                    'salon' => 'Салон:',
+//                    'class' => 'Класс:',
+//                    'kpp' => 'КПП:',
+//                    'year' => 'Год выпуска:',
+//                    'color' => 'Цвет:',
+//                    'carcase' => 'Кузов:',
+//                    'engine' => 'Двигатель:',
+//                ],
+//            ]);
+//        });
+
+        View::composer(['components.panels.cars.car_specification'], function (\Illuminate\View\View $view) {
+            $view->with('specifications', [
+                [
+                    'title' => 'Салон:',
+                    'character' => 'salon'
+                ],
+                [
+                    'title' => 'Класс:',
+                    'character' => 'class'
+                ],
+                [
+                    'title' => 'КПП:',
+                    'character' => 'kpp'
+                ],
+                [
+                    'title' => 'Год выпуска:',
+                    'character' => 'year'
+                ],
+                [
+                    'title' => 'Цвет:',
+                    'character' => 'color'
+                ],
+                [
+                    'title' => 'Кузов:',
+                    'character' => 'carcase'
+                ],
+                [
+                    'title' => 'Двигатель:',
+                    'character' => 'engine'
+                ]
+            ]);
+        });
     }
 }

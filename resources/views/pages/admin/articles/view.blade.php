@@ -4,9 +4,8 @@
 @section('title', 'Управление новостями')
 
 @section('content')
-    @if(session()->has('success_messages'))
-        <x-panels.messages.success :messages="session('success_messages', [])" />
-    @endif
+
+    <x-panels.messages.flashes />
 
     <main class="flex-1 container mx-auto bg-white">
         <x-panels.admin.admin_articles_table :articles="$articles"/>

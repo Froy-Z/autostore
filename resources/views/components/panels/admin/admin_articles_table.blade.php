@@ -31,7 +31,7 @@
     </table>
 
     <div class="text-center mt-4">
-        <x-panels.articles.news_slider />
+        <x-panels.slider />
     </div>
 
 </section>
