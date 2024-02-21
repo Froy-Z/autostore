@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('kpp')->nullable();
             $table->year('year')->nullable();
             $table->string('color')->nullable();
-            $table->boolean('is_new');
+            $table->boolean('is_new')->default(false);
 //            $table->string('image')->nullable();
             $table->timestamps();
         });

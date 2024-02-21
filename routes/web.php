@@ -2,12 +2,13 @@
 
 use App\Http\Controllers\Admin\AdminPagesController;
 use App\Http\Controllers\Admin\ArticlesController;
+use App\Http\Controllers\Admin\CarsController;
 use App\Http\Controllers\CatalogController;
 use App\Http\Controllers\PagesController;
 use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', [PagesController::class, 'home'])->name('home');
+Route::get('/',         [PagesController::class, 'home'])->name('home');
 Route::get('/about',    [PagesController::class, 'about'])->name('about');
 Route::get('/contacts', [PagesController::class, 'contacts'])->name('contacts');
 Route::get('/sale',     [PagesController::class, 'sale'])->name('sale');
@@ -17,7 +18,8 @@ Route::get('/clients',  [PagesController::class, 'clients'])->name('clients');
 Route::prefix('admin')->name('admin.')->group(function (Router $router) {
     $router->get('/', [AdminPagesController::class, 'admin'])->name('admin');
     $router->get('articles/view', [ArticlesController::class, 'view'])->name('view');
-    $router->resource('articles', ArticlesController::class);
+    $router->resource('articles', ArticlesController::class)->except('edit', 'update', 'destroy');
+    $router->resource('cars', CarsController::class)->except('show');
 });
 
 
