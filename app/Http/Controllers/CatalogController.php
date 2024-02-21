@@ -19,7 +19,7 @@ class CatalogController extends Controller
             ->when((($maxPrice = $request->get('max_price')) !== null), fn($query) => $query->where('price', '<=', $maxPrice))
             ->when(($orderPrice = $request->get('order_price')) !== null, fn($query) => $query->orderBy('price', $orderPrice === 'desc' ? 'desc' : 'asc'))
             ->when(($orderModel = $request->get('order_model')) !== null, fn($query) => $query->orderBy('name', $orderModel === 'desc' ? 'desc' : 'asc'))
-            ->get();
+            ->take(14)->get();
 
         return view('pages.cars.catalog', ['cars' => $cars]);
     }

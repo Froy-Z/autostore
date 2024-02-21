@@ -51,6 +51,4 @@ class ArticleRequest extends FormRequest
     {
         return parent::attributes();
     }
-
-
 }
