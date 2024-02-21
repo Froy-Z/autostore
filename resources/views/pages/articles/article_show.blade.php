@@ -1,10 +1,6 @@
-@extends('layouts.inner_two_columns')
-
-@section('page-title', $article->title)
-@section('title', $article->title)
-
-@section('content')
-    <x-panels.articles.news_concrete />
-@endsection
-
+<x-layouts.inner_two_columns pageTitle="{{ $article->title }}" title="{{ $article->title }}">
+    <x-slot:content>
+        <x-panels.articles.news_concrete />
+    </x-slot:content>
+</x-layouts.inner_two_columns>
 
