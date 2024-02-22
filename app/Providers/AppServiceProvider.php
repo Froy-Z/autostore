@@ -2,8 +2,8 @@
 
 namespace App\Providers;
 
+use App\Contracts\Services\FlashMessageContract;
 use App\Services\FlashMessage;
-use App\Services\FlashMessageContract;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
