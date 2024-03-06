@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Contracts\Services\FlashMessageContract;
 use Illuminate\Session\SessionManager;
 use Illuminate\Session\Store;
 use Illuminate\Support\Collection;

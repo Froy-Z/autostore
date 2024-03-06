@@ -2,7 +2,7 @@
 
 namespace App\View\Components\Panels\Messages;
 
-use App\Services\FlashMessageContract;
+use App\Contracts\Services\FlashMessageContract;
 use Closure;
 use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;

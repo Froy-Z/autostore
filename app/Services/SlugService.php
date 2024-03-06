@@ -2,9 +2,10 @@
 
 namespace App\Services;
 
+use App\Contracts\Services\SlugServiceContract;
 use Illuminate\Support\Str;
 
-class SlugService
+class SlugService implements SlugServiceContract
 {
     public static function generateSlug(string $title): string
     {

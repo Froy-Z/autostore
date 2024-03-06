@@ -2,20 +2,27 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Article;
+use App\Contracts\Repositories\ArticlesRepositoryContract;
+use App\Contracts\Repositories\CarsRepositoryContract;
 use App\Models\Car;
 use Illuminate\Foundation\Application;
-use Illuminate\Support\Collection;
+use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\View\Factory;
 use Illuminate\View\View;
 
 class PagesController extends Controller
 {
+    public function __construct(
+        private readonly CarsRepositoryContract $carsRepository,
+        private readonly ArticlesRepositoryContract $articlesRepository
+    ) {
+    }
+
     public function home(): Factory|View|Application
     {
-        $articles = Article::latest('published_at')->whereNotNull('published_at')->take(3)->get();
-        $cars = Car::where('is_new', 1)->take(4)->get();
+        $articles = $this->articlesRepository->getPublishedArticles(true,'desc', 3);
+        $cars = $this->carsRepository->getNewCars(4);
         return view('pages.homepage', ['cars' => $cars, 'articles' => $articles]);
     }
 
@@ -37,8 +44,7 @@ class PagesController extends Controller
     }
     public function clients(): Factory|View|Application
     {
-        /** @var Collection $cars */
-        $cars = Car::get();
+        $cars = $this->carsRepository->findAll();
 
         dump(
             $cars->avg('price'),
@@ -68,9 +74,15 @@ class PagesController extends Controller
         return view('pages.clients');
     }
 
-    public function articles(): Factory|View|Application
+    public function articles(Request $request): Factory|View|Application
     {
-        $articles = Article::latest('published_at')->whereNotNull('published_at')->get();
+        $articles = $this->articlesRepository->paginateForArticles(
+            true,
+            'desc',
+            ['*'],
+            5,
+            $request->get('page',1)
+        );
         return view('pages.articles.articles', ['articles' => $articles]);
     }
 }
