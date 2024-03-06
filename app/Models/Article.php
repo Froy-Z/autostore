@@ -2,10 +2,12 @@
 
 namespace App\Models;
 
+use App\Contracts\Repositories\HasTagsContract;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
-class Article extends Model
+class Article extends Model implements HasTagsContract
 {
     use HasFactory;
 
@@ -22,4 +24,8 @@ class Article extends Model
         'published_at' => 'datetime',
     ];
 
+    public function tags(): MorphToMany
+    {
+        return $this->morphToMany(Tag::class, 'taggable');
+    }
 }

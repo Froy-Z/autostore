@@ -50,6 +50,10 @@ class ArticlesRepository implements ArticlesRepositoryContract
     {
         return $this->getModel()->findOrFail($id);
     }
+    public function findBySlug(string $slug): Article
+    {
+        return $this->getModel()->where('slug', '=', $slug)->firstOrFail();
+    }
 
     public function create(array $fields): Article
     {

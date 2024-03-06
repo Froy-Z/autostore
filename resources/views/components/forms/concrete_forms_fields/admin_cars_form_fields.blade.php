@@ -159,3 +159,14 @@
         :checked="old('is_new', $car->is_new)"
     />
 </x-forms.groups.checkbox_group>
+
+<x-forms.groups.group for="fieldCarTags" error="{{ $errors->first('tags') }}">
+    <x-slot:label>Теги</x-slot:label>
+    <x-forms.inputs.text
+        id="fieldCarTags"
+        name="tags"
+        placeholder="Парадигма, Архетип, Киа Seed"
+        value="{{ old('tags', $car->tags->pluck('name')->implode(', ')) }}"
+        error="{{ $errors->first('tags') }}"
+    />
+</x-forms.groups.group>
