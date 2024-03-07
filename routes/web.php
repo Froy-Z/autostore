@@ -18,7 +18,6 @@ Route::get('/clients',  [PagesController::class, 'clients'])->name('clients');
 Route::prefix('admin')->name('admin.')->group(function (Router $router) {
     $router->get('/', [AdminPagesController::class, 'admin'])->name('admin');
     $router->get('articles/view', [ArticlesController::class, 'view'])->name('view');
-    $router->resource('articles', ArticlesController::class)->except('edit', 'update', 'destroy');
     $router->resource('cars', CarsController::class)->except('show');
 });
 

@@ -12,10 +12,9 @@
                 <p class="text-gray-600 text-base">
                     <a class="hover:text-orange" href="{{ route('article.show', ['slug' => $article->slug]) }}">{{ $article->description }}</a>
                 </p>
-                <div>
-                    <span class="text-sm text-white italic rounded bg-orange px-2">Это</span>
-                    <span class="text-sm text-white italic rounded bg-orange px-2">Теги</span>
-                </div>
+                @if($article->tags->isNotEmpty())
+                    <x-panels.tags_news :tags="$article->tags" />
+                @endif
                 <div class="flex items-center">
                     <p class="text-sm text-gray-400 italic">{{ isset($article->published_at) ? $article->published_at->format('d M Y') : '' }}</p>
                 </div>

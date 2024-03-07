@@ -37,24 +37,9 @@
                         <x-slot:label>Параметры</x-slot:label>
                         <x-panels.catalog.detail_product_props>
                             <x-car_specifications :car="$car"/>
-                            <table class="w-full">
-                                <tr>
-                                    <td class="py-2 text-gray-600 w-1/2">Теги:</td>
-                                    <td class="py-2 text-black font-bold w-1/2">
-                                        <div>
-                                            @if($car->is_new === 1)
-                                                <span
-                                                    class="text-sm text-white italic rounded bg-orange px-2">Новинка</span>
-                                            @endif
-                                            @isset($car->old_price)
-                                                <span class="text-sm text-white italic rounded bg-orange px-2">Со скидкой</span>
-                                            @endisset
-                                            <span
-                                                class="text-sm text-white italic rounded bg-orange px-2">{{ $car->name }}</span>
-                                        </div>
-                                    </td>
-                                </tr>
-                            </table>
+                            @if($car->tags->isNotEmpty())
+                                <x-panels.tags :tags="$car->tags" />
+                            @endif
                         </x-panels.catalog.detail_product_props>
                     </x-panels.accordion>
                     <x-panels.accordion>

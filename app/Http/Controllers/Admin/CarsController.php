@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Admin;
 
 use App\Contracts\Repositories\CarsRepositoryContract;
 use App\Contracts\Services\FlashMessageContract;
+use App\Contracts\Services\TagsSynchronizerServiceContract;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CarRequest;
+use App\Http\Requests\TagsRequest;
 use App\Models\Car;
 use Illuminate\Http\RedirectResponse;
 
@@ -35,10 +37,11 @@ class CarsController extends Controller
     /**
      * Добавление автомобиля в БД на основе POST запроса
      */
-    public function store(CarRequest $request)
+    public function store(CarRequest $carRequest, TagsRequest $tagsRequest, TagsSynchronizerServiceContract $tagsSynchronizerService)
     {
         try {
-            $this->carsRepository->create($request->validated());
+            $car = $this->carsRepository->create($carRequest->validated());
+            $tagsSynchronizerService->sync($car, $tagsRequest->get('tags', []));
         } catch (\Exception $e) {
             $this->flashMessage->error('При создании модели произошла ошибка');
             return redirect()->route('admin.cars.create');
@@ -59,10 +62,15 @@ class CarsController extends Controller
     /**
      * Обновить и сохранить параметры автомобиля
      */
-    public function update(CarRequest $request, Car $car)
+    public function update(
+        Car $car,
+        CarRequest $carRequest,
+        TagsRequest $tagsRequest,
+        TagsSynchronizerServiceContract $tagsSynchronizerService)
     {
         try {
-            $this->carsRepository->update($car->id, $request->validated());
+            $carUpdate = $this->carsRepository->update($car->id, $carRequest->validated());
+            $tagsSynchronizerService->sync($carUpdate, $tagsRequest->get('tags', []));
         } catch (\Exception $e) {
             $this->flashMessage->error('При обновлении модели произошла ошибка');
             return redirect()->route('admin.cars.edit', ['car' => $car]);

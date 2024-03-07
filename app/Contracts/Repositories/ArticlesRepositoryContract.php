@@ -22,6 +22,7 @@ interface ArticlesRepositoryContract
         string $pageName = 'page',
     ): LengthAwarePaginator;
     public function findById(int $id): Article;
+    public function findBySlug(string $slug): Article;
     public function create(array $fields): Article;
     public function update(int $id, array $fields): Article;
     public function delete(int $id);

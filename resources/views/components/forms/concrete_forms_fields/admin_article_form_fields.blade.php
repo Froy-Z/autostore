@@ -41,3 +41,13 @@
     />
 </x-forms.groups.checkbox_group>
 
+<x-forms.groups.group for="fieldArticleTags" error="{{ $errors->first('tags') }}">
+    <x-slot:label>Теги</x-slot:label>
+    <x-forms.inputs.text
+        id="fieldArticleTags"
+        name="tags"
+        placeholder="Парадигма, Архетип, Киа Seed"
+        value="{{ old('tags', $article->tags->pluck('name')->implode(', ')) }}"
+        error="{{ $errors->first('tags') }}"
+    />
+</x-forms.groups.group>
