@@ -9,6 +9,7 @@ interface CatalogDataCollectorServiceContract
 {
     public function collectCatalogData(
         CatalogFilterDTO $catalogFilterDTO,
+        ?string $slug,
         int $perPage = 16,
         int $page = 1,
         string $pageName = 'page',

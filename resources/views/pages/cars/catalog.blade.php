@@ -1,6 +1,7 @@
 <x-layouts.inner pageTitle="Каталог" title="Каталог">
     <x-slot:content>
-        <x-panels.catalog.filter :filterValues="$catalogData->filter"/>
+        <x-panels.catalog.filter :filterValues="$catalogData->filter"
+                                 :currentCategory="$catalogData->currentCategory"/>
         <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-6">
             <x-panels.catalog.cars_item :cars="$catalogData->cars" class="my-4" method="get"/>
         </div>

@@ -6,6 +6,7 @@ use App\Models\Car;
 use App\Models\CarBody;
 use App\Models\CarClass;
 use App\Models\CarEngine;
+use App\Models\Category;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Seeder;
 
@@ -20,14 +21,18 @@ class CarSeeder extends Seeder
         $carEngines = CarEngine::get();
         /** @var Collection $carBodies */
         $carBodies = CarBody::get();
+        /** @var Collection $categories */
+        $categories = Category::get();
         for ($i = 0; $i < 4; $i++) {
             foreach ($this->models() as $model) {
-                Car::factory()->create(array_merge(
+                /** @var Car $carModel */
+                $carModel = Car::factory()->create(array_merge(
                     ['name' => $model,
                         'car_class_id' => $carClasses->random(),
                         'car_engine_id' => $carEngines->random(),
                         'car_body_id' => $carBodies->random(),
                     ]));
+                $carModel->categories()->attach($categories->random(rand(1, 3)));
             }
         }
 

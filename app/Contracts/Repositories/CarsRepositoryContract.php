@@ -11,10 +11,6 @@ interface CarsRepositoryContract
 {
     public function getModel(): Car;
     public function findAll(): Collection;
-    public function findForCatalog(
-        CatalogFilterDTO $catalogFilterDTO,
-        array $fields = ["*"]
-    ): Collection;
     public function paginateForCatalog(
         CatalogFilterDTO $catalogFilterDTO,
         array $fields = ["*"],

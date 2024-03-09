@@ -1,7 +1,7 @@
 <input type="hidden" name="{{ $name }}" value="{{ $currentValue }}">
 <button
-    name="{{ $name }}"
-    value="{{ $nextValue }}"
+    name="{{ old($name) ?: $name }}"
+    value="{{ old($nextValue) ?: $nextValue}}"
     @class([
     'flex items-center cursor-pointer hover:no-underline
     hover:text-opacity-70 outline-none focus:outline-none',
