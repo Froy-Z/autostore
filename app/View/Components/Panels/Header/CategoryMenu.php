@@ -22,10 +22,7 @@ class CategoryMenu extends Component
 
     public function render(): View|Closure|string
     {
-        $categories = Category::withDepth()
-            ->having('depth', '<=', 1)
-            ->orderBy('sort')
-            ->get()->toTree();
+        $categories = $this->categoriesRepository->getCategoriesTree();
         return view('components.panels.header.category-menu', ['categories' => $categories]);
     }
     public function selectedCategory(?Category $category = null): bool

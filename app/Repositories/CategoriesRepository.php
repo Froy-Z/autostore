@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Contracts\Repositories\CategoriesRepositoryContract;
 use App\Models\Category;
+use Illuminate\Database\Eloquent\Collection;
 
 class CategoriesRepository implements CategoriesRepositoryContract
 {
@@ -24,5 +25,13 @@ class CategoriesRepository implements CategoriesRepositoryContract
             ->where('slug', '=', $slug)
             ->when($relations, fn ($query) => $query->with($relations))
             ->firstOrFail();
+    }
+
+    public function getCategoriesTree(): Collection
+    {
+        return Category::withDepth()
+            ->having('depth', '<=', 1)
+            ->orderBy('sort')
+            ->get()->toTree();
     }
 }
