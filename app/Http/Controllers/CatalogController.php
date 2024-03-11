@@ -12,7 +12,11 @@ use Illuminate\View\View;
 
 class CatalogController extends Controller
 {
-    public function catalog(Request $request, CatalogDataCollectorServiceContract $catalogDataCollectorService): Factory|View|Application
+    public function catalog(
+        Request $request,
+        CatalogDataCollectorServiceContract $catalogDataCollectorService,
+        ?string $slug = null,
+    ): Factory|View|Application
     {
         $catalogFilterDTO = (new CatalogFilterDTO())
             ->setModel($request->get('model'))
@@ -23,6 +27,7 @@ class CatalogController extends Controller
 
         $catalogData = $catalogDataCollectorService->collectCatalogData(
             $catalogFilterDTO,
+            $slug,
             16,
             $request->get('page', 1),
         );

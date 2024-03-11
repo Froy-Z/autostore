@@ -1,4 +1,4 @@
-@props(['filterValues'])
+@props(['filterValues', 'currentCategory'])
 <form {{ $attributes->merge(['class' => 'border rounded p-4 space-y-4' ]) }} >
     <div class="block sm:flex space-y-2 sm:space-y-0 sm:space-x-4 w-full">
         <x-forms.groups.filter_group for="fieldFilterName">
@@ -36,7 +36,7 @@
             <x-forms.submit_button>
                 <x-icons.search class="h-4 w-4"/>
             </x-forms.submit_button>
-            <x-forms.cancel_button href="{{ route('catalog') }}">
+            <x-forms.cancel_button href="{{ route('catalog', ['slug' => $currentCategory]) }}">
                 <x-icons.cancel_search class="h-4 w-4"/>
             </x-forms.cancel_button>
         </div>

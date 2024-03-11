@@ -2,6 +2,8 @@
 
 namespace App\DTO;
 
+use App\Models\Category;
+
 class CatalogFilterDTO
 {
     private ?string $model = null;
@@ -9,6 +11,7 @@ class CatalogFilterDTO
     private ?int $maxPrice = 0;
     private ?string $orderPrice = null;
     private ?string $orderModel = null;
+    private array $allCategories = [];
 
     public function getModel(): ?string
     {
@@ -71,5 +74,24 @@ class CatalogFilterDTO
         return $this;
     }
 
+    public function getAllCategories(): array
+    {
+        return $this->allCategories;
+    }
 
+    public function setAllCategories(array $allCategories): static
+    {
+        $this->allCategories = $allCategories;
+        return $this;
+    }
+
+    public function forCategory(Category $category): static
+    {
+        return $this->setAllCategories($category
+                ->descendants
+                ->pluck('id')
+                ->push($category->id)
+                ->toArray()
+        );
+    }
 }

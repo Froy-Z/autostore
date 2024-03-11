@@ -19,17 +19,18 @@ Route::prefix('admin')->name('admin.')->group(function (Router $router) {
     $router->get('/', [AdminPagesController::class, 'admin'])->name('admin');
     $router->get('articles/view', [ArticlesController::class, 'view'])->name('view');
     $router->resource('cars', CarsController::class)->except('show');
+    $router->resource('articles', ArticlesController::class);
 });
 
 
 Route::prefix('/catalog')->group(function (Router $router) {
-    $router->get('/', [CatalogController::class, 'catalog'])->name('catalog');
+    $router->get('/{slug?}', [CatalogController::class, 'catalog'])->name('catalog');
     $router->get('/product/{id}', [CatalogController::class, 'product'])->name('product');
 });
 
 
 Route::prefix('/articles')->group(function (Router $router) {
     $router->get('/', [PagesController::class, 'articles'])->name('articles');
-    $router->get('/{slug}', [ArticlesController::class, 'show'])->name('article.show');
+    $router->get('/{article:slug}', [ArticlesController::class, 'show'])->name('article.show');
 });
 

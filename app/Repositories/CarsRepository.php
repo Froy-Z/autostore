@@ -37,7 +37,6 @@ class CarsRepository implements CarsRepositoryContract
         return $this->getModel()->findOrFail($id);
     }
 
-
     public function create(array $fields): Car
     {
         return $this->getModel()->create($fields);
@@ -53,13 +52,6 @@ class CarsRepository implements CarsRepositoryContract
     public function delete(int $id)
     {
         $this->getModel()->where('id', $id)->delete();
-    }
-
-    public function findForCatalog(
-        CatalogFilterDTO $catalogFilterDTO,
-        array $fields = ["*"]
-    ): Collection {
-        return $this->catalogQuery($catalogFilterDTO)->get($fields);
     }
 
     public function paginateForCatalog(
@@ -79,6 +71,7 @@ class CarsRepository implements CarsRepositoryContract
             ->when($catalogFilterDTO->getMinPrice() !== 0, fn($query) => $query->where('price', '>=', $catalogFilterDTO->getMinPrice()))
             ->when($catalogFilterDTO->getMaxPrice() !== 0, fn($query) => $query->where('price', '<=', $catalogFilterDTO->getMaxPrice()))
             ->when($catalogFilterDTO->getOrderPrice() !== null, fn($query) => $query->orderBy('price', $catalogFilterDTO->getOrderPrice()))
-            ->when($catalogFilterDTO->getOrderModel() !== null, fn($query) => $query->orderBy('name', $catalogFilterDTO->getOrderModel()));
+            ->when($catalogFilterDTO->getOrderModel() !== null, fn($query) => $query->orderBy('name', $catalogFilterDTO->getOrderModel()))
+            ->when($catalogFilterDTO->getAllCategories(), fn ($query) => $query->whereHas('categories', fn ($query) => $query->whereIn('id', $catalogFilterDTO->getAllCategories())));
     }
 }
