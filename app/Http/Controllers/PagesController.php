@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Contracts\Repositories\ArticlesRepositoryContract;
+use App\Contracts\Repositories\BannersRepositoryContract;
 use App\Contracts\Repositories\CarsRepositoryContract;
 use App\Models\Car;
 use Illuminate\Foundation\Application;
@@ -15,15 +16,16 @@ class PagesController extends Controller
 {
     public function __construct(
         private readonly CarsRepositoryContract $carsRepository,
-        private readonly ArticlesRepositoryContract $articlesRepository
+        private readonly ArticlesRepositoryContract $articlesRepository,
     ) {
     }
 
-    public function home(): Factory|View|Application
+    public function home(BannersRepositoryContract $bannersRepository): Factory|View|Application
     {
         $articles = $this->articlesRepository->getPublishedArticles(true,'desc', 3);
         $cars = $this->carsRepository->getNewCars(4);
-        return view('pages.homepage', ['cars' => $cars, 'articles' => $articles]);
+        $banners = $bannersRepository->getRandomBanners(3);
+        return view('pages.homepage', ['cars' => $cars, 'articles' => $articles, 'banners' => $banners]);
     }
 
     public function about(): Factory|View|Application
