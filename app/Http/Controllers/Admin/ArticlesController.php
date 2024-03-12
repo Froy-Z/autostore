@@ -3,14 +3,12 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Contracts\Repositories\ArticlesRepositoryContract;
+use App\Contracts\Services\ArticlesServiceContract;
 use App\Contracts\Services\FlashMessageContract;
-use App\Contracts\Services\SlugServiceContract;
-use App\Contracts\Services\TagsSynchronizerServiceContract;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ArticleRequest;
 use App\Http\Requests\TagsRequest;
 use App\Models\Article;
-use App\Services\FlashMessage;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -61,18 +59,18 @@ class ArticlesController extends Controller
      * Добавление статьи в БД на основе POST запроса
      */
     public function store(
-        ArticleRequest $request,
-        SlugServiceContract $slugService,
-        TagsRequest $tagsRequest,
-        TagsSynchronizerServiceContract $tagsSynchronizerService
+        ArticleRequest          $articleRequest,
+        TagsRequest             $tagsRequest,
+        ArticlesServiceContract $articlesService,
     ): RedirectResponse
     {
         try {
-            $slug = $slugService->generateSlug($request->title);
-            $article = $this->articlesRepository->create(['slug' => $slug] + $request->validated());
-            $tagsSynchronizerService->sync($article, $tagsRequest->get('tags', []));
+            $articlesService->create(
+                $articleRequest->validated(),
+                $tagsRequest->get('tags', []));
         } catch (\Exception $e) {
             $this->flashMessage->error('При создании новости произошла ошибка');
+            $this->flashMessage->error($e->getMessage());
             return redirect()->route('admin.articles.create');
         }
         $this->flashMessage->success('Новость успешно создана');
@@ -100,17 +98,21 @@ class ArticlesController extends Controller
      * PUT/PATCH обновление статьи
      */
     public function update(
-        Article $article,
-        ArticleRequest $articleRequest,
-        TagsRequest $tagsRequest,
-        TagsSynchronizerServiceContract $tagsSynchronizerService)
+        Article                 $article,
+        ArticleRequest          $articleRequest,
+        TagsRequest             $tagsRequest,
+        ArticlesServiceContract $articlesService,
+    ): RedirectResponse
     {
         try {
-            $articleUpdate = $this->articlesRepository->update($article->id, $articleRequest->validated());
-            $tagsSynchronizerService->sync($articleUpdate, $tagsRequest->get('tags', []));
+            $articlesService->update(
+                $article->id,
+                $articleRequest->validated(),
+                $tagsRequest->get('tags', []));
         } catch (\Exception $e) {
-            $this->flashMessage->error('При обновлении новости произошла ошибка');
-            return redirect()->route('admin.cars.edit', ['article' => $article]);
+//            $this->flashMessage->error('При обновлении новости произошла ошибка');
+            $this->flashMessage->error($e->getMessage());
+            return redirect()->route('admin.articles.edit', ['article' => $article]);
         }
         $this->flashMessage->success('Новость успешно обновлена');
         return redirect()->route('admin.view');
@@ -119,10 +121,13 @@ class ArticlesController extends Controller
     /**
      * Удаление статьи DELETE запросом
      */
-    public function destroy(Article $article)
+    public function destroy(
+        Article $article,
+        ArticlesServiceContract $articlesService
+    ): RedirectResponse
     {
         try {
-            $this->articlesRepository->delete($article->id);
+            $articlesService->delete($article->id);
         } catch (\Exception $e) {
             $this->flashMessage->error('При удалении новости произошла ошибка');
             return redirect()->route('admin.view');

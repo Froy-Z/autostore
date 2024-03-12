@@ -32,10 +32,11 @@ class CatalogDataCollectorService implements CatalogDataCollectorServiceContract
 
         $cars = $this->carsRepository->paginateForCatalog(
             $catalogFilterDTO,
-            ['id', 'name', 'price', 'old_price'],
+            ['id', 'name', 'price', 'old_price', 'image_id'],
             $perPage,
             $page,
-            $pageName
+            $pageName,
+            ['image'],
         );
 
         return new CatalogDataDTO($catalogFilterDTO, $cars, $category);

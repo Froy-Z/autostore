@@ -38,6 +38,7 @@ class ArticleRequest extends FormRequest
             ],
             'description' => ['required', 'string', 'max:255'],
             'body' => 'required|string',
+            'image'  => ['sometimes', 'nullable', 'image'],
             'published_at' => ['sometimes', 'date', 'date_format:Y-m-d H:i:s'],
         ];
     }
