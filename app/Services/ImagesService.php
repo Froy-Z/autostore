@@ -23,7 +23,7 @@ class ImagesService implements ImagesServiceContract
             $file = new File($file);
         }
 
-        return Storage::disk($this->disk)->putFile('images', new File($file));
+        return Storage::disk($this->disk)->putFile('images', $file);
     }
 
     public function createImage(File | string $file): Image
