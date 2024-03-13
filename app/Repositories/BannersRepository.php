@@ -21,7 +21,7 @@ class BannersRepository implements BannersRepositoryContract
             "randomBanners|$limit",
             3600,
             fn () => $this->model::inRandomOrder()
-                ->when($relations, fn($query) => $query->with($relations))
+                ->with($relations)
                 ->limit($limit)->get()
             );
     }
