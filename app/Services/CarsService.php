@@ -3,60 +3,70 @@
 namespace App\Services;
 
 use App\Contracts\Repositories\CarsRepositoryContract;
-use App\Contracts\Services\CarsServiceContract;
+use App\Contracts\Services\CreateCarServiceContract;
+use App\Contracts\Services\DeleteCarServiceContract;
 use App\Contracts\Services\ImagesServiceContract;
 use App\Contracts\Services\TagsSynchronizerServiceContract;
+use App\Contracts\Services\UpdateCarServiceContract;
 use App\Models\Car;
+use Illuminate\Support\Facades\DB;
 
-class CarsService implements CarsServiceContract
+class CarsService implements CreateCarServiceContract, UpdateCarServiceContract, DeleteCarServiceContract
 {
 
     public function __construct(
         private readonly CarsRepositoryContract $carsRepository,
         private readonly ImagesServiceContract $imagesService,
-        private readonly TagsSynchronizerServiceContract $tagsSynchronizerService,
+        private readonly TagsSynchronizerServiceContract $tagsService,
     ) {
     }
 
     public function create(array $fields, array $tags): Car
     {
-        if (! empty($fields['image'])) {
-            $image = $this->imagesService->createImage($fields['image']);
-            $fields['image_id'] = $image->id;
-        }
-        $car = $this->carsRepository->getModel()->create($fields);
-        if(! empty($fields['categories'])) {
-            $this->carsRepository->syncCategories($car, $fields['categories']);
-        }
-        $this->tagsSynchronizerService->sync($car, $tags);
-        $this->carsRepository->flushCache();
-        return $car;
+        return DB::transaction(function () use ($fields, $tags) {
+            if (! empty($fields['image'])) {
+                $image = $this->imagesService->createImage($fields['image']);
+                $fields['image_id'] = $image->id;
+            }
+            $car = $this->carsRepository->getModel()->create($fields);
+            if(! empty($fields['categories'])) {
+                $this->carsRepository->syncCategories($car, $fields['categories']);
+            }
+            $this->tagsService->sync($car, $tags);
+            $this->carsRepository->flushCache();
+            return $car;
+        });
     }
 
     public function update(int $id, array $fields, array $tags = []): Car
     {
-        $car = $this->carsRepository->findById($id);
-        $oldImageId = null;
+        return DB::transaction(function () use ($id, $fields, $tags) {
+            $car = $this->carsRepository->findById($id);
+            $oldImageId = null;
 
-        if (! empty($fields['image'])) {
-            $image = $this->imagesService->createImage($fields['image']);
-            $fields['image_id'] = $image->id;
-            $oldImageId = $car->image_id;
-        }
-        $this->carsRepository->update($car, $fields);
-        if ($fields['categories'] !== null) {
-            $this->carsRepository->syncCategories($car, $fields['categories']);
-        }
-        if (! empty($oldImageId)) {
-            $this->imagesService->deleteImage($oldImageId);
-        }
-        $this->carsRepository->flushCache('');
-        return $car;
+            if (! empty($fields['image'])) {
+                $image = $this->imagesService->createImage($fields['image']);
+                $fields['image_id'] = $image->id;
+                $oldImageId = $car->image_id;
+            }
+            $car = $this->carsRepository->update($car, $fields);
+            $this->tagsService->sync($car, $tags);
+            if ($fields['categories'] !== null) {
+                $this->carsRepository->syncCategories($car, $fields['categories']);
+            }
+            if (! empty($oldImageId)) {
+                $this->imagesService->deleteImage($oldImageId);
+            }
+            $this->carsRepository->flushCache('');
+            return $car;
+        });
     }
 
-    public function delete(int $id)
+    public function delete(int $id): void
     {
-        $this->carsRepository->delete($id);
-        $this->carsRepository->flushCache();
+        DB::transaction(function () use ($id) {
+            $this->carsRepository->delete($id);
+            $this->carsRepository->flushCache();
+        });
     }
 }
