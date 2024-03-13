@@ -19,6 +19,11 @@ class CategoriesRepository implements CategoriesRepositoryContract
         return $this->model;
     }
 
+    public function findAll(): Collection
+    {
+        return $this->getModel()->get();
+    }
+
     public function findBySlug(string $slug, array $relations = []): Category
     {
         return $this->getModel()

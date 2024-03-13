@@ -29,6 +29,8 @@ class CarRequest extends FormRequest
             'car_engine_id' => ['required', 'exists:' . CarEngine::class . ',id'],
             'car_class_id' => ['required', 'exists:' . CarClass::class . ',id'],
             'car_body_id' => ['required', 'exists:' . CarBody::class . ',id'],
+            'categories' => ['required'],
+            'image'  => ['sometimes', 'nullable', 'image'],
         ];
     }
 
@@ -41,7 +43,9 @@ class CarRequest extends FormRequest
 
     public function messages()
     {
-        return parent::messages();
+        return [
+            'name.required' => 'Название модели должно быть заполнено',
+        ];
     }
 
     public function attributes()

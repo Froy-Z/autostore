@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Image;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -21,8 +22,8 @@ class ArticleFactory extends Factory
             'title' => $this->faker->word(),
             'description' => $this->faker->sentence(),
             'body' => $this->faker->paragraph(),
+            'image_id' => Image::factory(),
             'published_at' => $this->faker->optional()->dateTimeThisMonth
         ];
     }
 }
-

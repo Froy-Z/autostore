@@ -3,6 +3,8 @@
 namespace App\Repositories;
 
 use App\Contracts\Repositories\ArticlesRepositoryContract;
+use App\Contracts\Repositories\ImagesRepositoryContract;
+use App\Contracts\Services\ImagesServiceContract;
 use App\Models\Article;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
@@ -11,7 +13,7 @@ use Illuminate\Support\Collection;
 class ArticlesRepository implements ArticlesRepositoryContract
 {
     public function __construct(
-        private readonly Article $model
+        private readonly Article $model,
     ) {
     }
 
@@ -57,12 +59,11 @@ class ArticlesRepository implements ArticlesRepositoryContract
 
     public function create(array $fields): Article
     {
-        return Article::create($fields);
+        return $this->getModel()->create($fields);
     }
 
-    public function update(int $id, array $fields): Article
+    public function update(Article $article, array $fields): Article
     {
-        $article = $this->findById($id);
         $article->update($fields);
         return $article;
     }

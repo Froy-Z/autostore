@@ -16,8 +16,7 @@
     <x-forms.inputs.one_file
         id="fieldCarMainImage"
         name="image"
-        value="/assets/images/no_image.png"
-        error="{{ $errors->first('image') }}"
+        value="{{ $car->imageUrl }}"
     />
 </x-forms.groups.group>
 
@@ -41,6 +40,22 @@
         value="{{ old('old_price', $car->old_price) }}"
         error="{{ $errors->first('old_price') }}"
     />
+</x-forms.groups.group>
+
+<x-forms.groups.group for="fieldCarCategories" error="{{ $errors->first('categories') }}">
+    <x-slot:label>Категории</x-slot:label>
+    <x-forms.inputs.select
+        id="fieldCarCategories"
+        name="categories[]"
+        error="{{ $errors->first('categories') }}"
+        multiple
+    >
+        @foreach ($categories as $category)
+            <option @selected(in_array($category->id, old('categories', $car->categories->pluck('id')->all())))
+                    value="{{ $category->id }}">{{$category->name }}
+            </option>
+        @endforeach
+    </x-forms.inputs.select>
 </x-forms.groups.group>
 
 <x-forms.groups.group for="fieldCarDescription" error="{{ $errors->first('description') }}">
@@ -143,12 +158,11 @@
 </x-forms.groups.group>
 
 <x-forms.groups.group for="fieldCarAdditionalImages" error="{{ $errors->first('images') }}">
-    <x-slot:label>Основное изображение модели</x-slot:label>
+    <x-slot:label>Дополнительные изображения модели</x-slot:label>
     <x-forms.inputs.multiple_files
         id="fieldCarAdditionalImages"
         name="images"
-        :values="['/assets/images/no_image.png', '/assets/images/no_image.png']"
-        error="{{ $errors->first('image') }}"
+        :values="$car->images->pluck('url')->all()"
     />
 </x-forms.groups.group>
 

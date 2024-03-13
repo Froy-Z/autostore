@@ -3,6 +3,8 @@
 namespace App\Repositories;
 
 use App\Contracts\Repositories\CarsRepositoryContract;
+use App\Contracts\Repositories\ImagesRepositoryContract;
+use App\Contracts\Services\ImagesServiceContract;
 use App\DTO\CatalogFilterDTO;
 use App\Models\Car;
 use Illuminate\Contracts\Database\Eloquent\Builder;
@@ -12,7 +14,8 @@ use Illuminate\Support\Collection;
 class CarsRepository implements CarsRepositoryContract
 {
     public function __construct(
-        private readonly Car $model
+        private readonly Car $model,
+        private readonly ImagesServiceContract $imagesService,
     ) {
     }
 
@@ -40,11 +43,11 @@ class CarsRepository implements CarsRepositoryContract
     public function create(array $fields): Car
     {
         return $this->getModel()->create($fields);
+
     }
 
-    public function update(int $id, array $fields): Car
+    public function update(Car $car, array $fields): Car
     {
-        $car = $this->findById($id);
         $car->update($fields);
         return $car;
     }
@@ -60,8 +63,10 @@ class CarsRepository implements CarsRepositoryContract
         int $perPage = 10,
         int $page = 1,
         string $pageName = 'page',
+        array $relations = [],
     ): LengthAwarePaginator {
-        return $this->catalogQuery($catalogFilterDTO)->paginate($perPage, $fields, $pageName, $page);
+        return $this->catalogQuery($catalogFilterDTO)->with($relations)
+            ->paginate($perPage, $fields, $pageName, $page);
     }
 
     private function catalogQuery(CatalogFilterDTO $catalogFilterDTO): Builder
@@ -73,5 +78,11 @@ class CarsRepository implements CarsRepositoryContract
             ->when($catalogFilterDTO->getOrderPrice() !== null, fn($query) => $query->orderBy('price', $catalogFilterDTO->getOrderPrice()))
             ->when($catalogFilterDTO->getOrderModel() !== null, fn($query) => $query->orderBy('name', $catalogFilterDTO->getOrderModel()))
             ->when($catalogFilterDTO->getAllCategories(), fn ($query) => $query->whereHas('categories', fn ($query) => $query->whereIn('id', $catalogFilterDTO->getAllCategories())));
+    }
+
+    public function syncCategories(Car $car, array $categories = []): Car
+    {
+        $car->categories()->sync($categories);
+        return $car;
     }
 }

@@ -3,23 +3,24 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Contracts\Repositories\CarsRepositoryContract;
+use App\Contracts\Services\CarsServiceContract;
 use App\Contracts\Services\FlashMessageContract;
-use App\Contracts\Services\TagsSynchronizerServiceContract;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CarRequest;
 use App\Http\Requests\TagsRequest;
 use App\Models\Car;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\View\View;
 
 class CarsController extends Controller
 {
     public function __construct(
         private readonly CarsRepositoryContract $carsRepository,
-        private readonly FlashMessageContract $flashMessage
+        private readonly FlashMessageContract $flashMessage,
     ) {
     }
 
-    public function index()
+    public function index(): View
     {
         $cars = $this->carsRepository->findAll();
         return view('pages.admin.cars.index', ['cars' => $cars]);
@@ -28,7 +29,7 @@ class CarsController extends Controller
     /**
      * Показать форму создания автомобиля
      */
-    public function create()
+    public function create(): View
     {
         $car = $this->carsRepository->getModel();
         return view('pages.admin.cars.create', ['car' => $car]);
@@ -37,11 +38,16 @@ class CarsController extends Controller
     /**
      * Добавление автомобиля в БД на основе POST запроса
      */
-    public function store(CarRequest $carRequest, TagsRequest $tagsRequest, TagsSynchronizerServiceContract $tagsSynchronizerService)
+    public function store(
+        CarRequest $carRequest,
+        TagsRequest $tagsRequest,
+        CarsServiceContract $carsService
+    ): RedirectResponse
     {
         try {
-            $car = $this->carsRepository->create($carRequest->validated());
-            $tagsSynchronizerService->sync($car, $tagsRequest->get('tags', []));
+            $carsService->create(
+                $carRequest->validated(),
+                $tagsRequest->get('tags', []));
         } catch (\Exception $e) {
             $this->flashMessage->error('При создании модели произошла ошибка');
             return redirect()->route('admin.cars.create');
@@ -53,7 +59,7 @@ class CarsController extends Controller
     /**
      * Показать форму для редактирования автомобиля
      */
-    public function edit(int $id)
+    public function edit(int $id): View
     {
         $car = $this->carsRepository->findById($id);
         return view('pages.admin.cars.edit', ['car' => $car]);
@@ -66,11 +72,14 @@ class CarsController extends Controller
         Car $car,
         CarRequest $carRequest,
         TagsRequest $tagsRequest,
-        TagsSynchronizerServiceContract $tagsSynchronizerService)
+        CarsServiceContract $carsService
+    ): RedirectResponse
     {
         try {
-            $carUpdate = $this->carsRepository->update($car->id, $carRequest->validated());
-            $tagsSynchronizerService->sync($carUpdate, $tagsRequest->get('tags', []));
+            $carsService->update(
+                $car->id,
+                $carRequest->validated(),
+                $tagsRequest->get('tags', []));
         } catch (\Exception $e) {
             $this->flashMessage->error('При обновлении модели произошла ошибка');
             return redirect()->route('admin.cars.edit', ['car' => $car]);
@@ -82,10 +91,13 @@ class CarsController extends Controller
     /**
      * Удалить автомобиль из БД
      */
-    public function destroy(Car $car): RedirectResponse
+    public function destroy(
+        Car $car,
+        CarsServiceContract $carsService
+    ): RedirectResponse
     {
         try {
-            $this->carsRepository->delete($car->id);
+            $carsService->delete($car->id);
         } catch (\Exception $e) {
             $this->flashMessage->error('При удалении модели произошла ошибка');
             return redirect()->route('admin.cars.index');

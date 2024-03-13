@@ -1,6 +1,6 @@
 <div class="col-span-4 sm:col-span-3 lg:col-span-4 p-4">
     <div class="space-y-4">
-        <img src="/assets/pictures/car_new_stinger.png" alt="" title="">
+        <img src="{{ $article->imageUrl }}" alt="" title="">
         @if($article->tags->isNotEmpty())
             <x-panels.tags_news :tags="$article->tags" />
         @endif
