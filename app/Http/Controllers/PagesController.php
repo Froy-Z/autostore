@@ -22,9 +22,9 @@ class PagesController extends Controller
 
     public function home(BannersRepositoryContract $bannersRepository): Factory|View|Application
     {
-        $articles = $this->articlesRepository->getPublishedArticles(true,'desc', 3);
-        $cars = $this->carsRepository->getNewCars(4);
-        $banners = $bannersRepository->getRandomBanners(3);
+        $articles = $this->articlesRepository->getPublishedArticles(true,'desc', 3, ['image', 'tags']);
+        $cars = $this->carsRepository->getNewCars(4, ['image']);
+        $banners = $bannersRepository->getRandomBanners(3, ['image']);
         return view('pages.homepage', ['cars' => $cars, 'articles' => $articles, 'banners' => $banners]);
     }
 
@@ -83,7 +83,8 @@ class PagesController extends Controller
             'desc',
             ['*'],
             5,
-            $request->get('page',1)
+            $request->get('page',1),
+            ['image', 'tags'],
         );
         return view('pages.articles.articles', ['articles' => $articles]);
     }

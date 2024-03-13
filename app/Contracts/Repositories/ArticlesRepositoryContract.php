@@ -8,7 +8,7 @@ use App\Models\Car;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 
-interface ArticlesRepositoryContract
+interface ArticlesRepositoryContract extends FlushCacheRepositoryContract
 {
     public function getModel(): Article;
     public function findAll(): Collection;
@@ -19,10 +19,11 @@ interface ArticlesRepositoryContract
         array $fields = ["*"],
         int $perPage = 5,
         int $page = 1,
+        array $relations = [],
         string $pageName = 'page',
     ): LengthAwarePaginator;
     public function findById(int $id): Article;
-    public function findBySlug(string $slug): Article;
+    public function findBySlug(string $slug, array $relations = []): Article;
     public function create(array $fields): Article;
     public function update(Article $article, array $fields): Article;
     public function delete(int $id);
