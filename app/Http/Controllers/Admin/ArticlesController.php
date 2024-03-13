@@ -4,7 +4,10 @@ namespace App\Http\Controllers\Admin;
 
 use App\Contracts\Repositories\ArticlesRepositoryContract;
 use App\Contracts\Services\ArticlesServiceContract;
+use App\Contracts\Services\CreateArticleServiceContract;
+use App\Contracts\Services\DeleteArticleServiceContract;
 use App\Contracts\Services\FlashMessageContract;
+use App\Contracts\Services\UpdateArticleServiceContract;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ArticleRequest;
 use App\Http\Requests\TagsRequest;
@@ -61,7 +64,7 @@ class ArticlesController extends Controller
     public function store(
         ArticleRequest          $articleRequest,
         TagsRequest             $tagsRequest,
-        ArticlesServiceContract $articlesService,
+        CreateArticleServiceContract $articlesService,
     ): RedirectResponse
     {
         try {
@@ -101,7 +104,7 @@ class ArticlesController extends Controller
         Article                 $article,
         ArticleRequest          $articleRequest,
         TagsRequest             $tagsRequest,
-        ArticlesServiceContract $articlesService,
+        UpdateArticleServiceContract $articlesService,
     ): RedirectResponse
     {
         try {
@@ -122,7 +125,7 @@ class ArticlesController extends Controller
      */
     public function destroy(
         Article $article,
-        ArticlesServiceContract $articlesService
+        DeleteArticleServiceContract $articlesService
     ): RedirectResponse
     {
         try {

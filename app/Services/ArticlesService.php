@@ -3,16 +3,17 @@
 namespace App\Services;
 
 use App\Contracts\Repositories\ArticlesRepositoryContract;
-use App\Contracts\Services\ArticlesServiceContract;
+use App\Contracts\Services\CreateArticleServiceContract;
+use App\Contracts\Services\DeleteArticleServiceContract;
 use App\Contracts\Services\ImagesServiceContract;
 use App\Contracts\Services\SlugServiceContract;
 use App\Contracts\Services\TagsSynchronizerServiceContract;
+use App\Contracts\Services\UpdateArticleServiceContract;
 use App\Models\Article;
+use Illuminate\Support\Facades\DB;
 
-class ArticlesService implements ArticlesServiceContract
+class ArticlesService implements CreateArticleServiceContract, UpdateArticleServiceContract, DeleteArticleServiceContract
 {
-
-
     public function __construct(
         private readonly ArticlesRepositoryContract $articlesRepository,
         private readonly SlugServiceContract $slugService,
@@ -23,39 +24,45 @@ class ArticlesService implements ArticlesServiceContract
 
     public function create(array $fields, array $tags = []): Article
     {
-        $slug = $this->slugService->generateSlug($fields['title']);
-        if (! empty($fields['image'])) {
-            $image = $this->imagesService->createImage($fields['image']);
-            $fields['image_id'] = $image->id;
-        }
-        $article = $this->articlesRepository->create(['slug' => $slug] + $fields);
-        $this->tagsService->sync($article, $tags);
-        $this->articlesRepository->flushCache();
-        return $article;
+        return DB::transaction(function () use ($fields, $tags) {
+            $slug = $this->slugService->generateSlug($fields['title']);
+            if (! empty($fields['image'])) {
+                $image = $this->imagesService->createImage($fields['image']);
+                $fields['image_id'] = $image->id;
+            }
+            $article = $this->articlesRepository->create(['slug' => $slug] + $fields);
+            $this->tagsService->sync($article, $tags);
+            $this->articlesRepository->flushCache();
+            return $article;
+        });
     }
 
     public function update(int $id, array $fields, array $tags = []): Article
     {
-        $article = $this->articlesRepository->findById($id);
-        $oldImageId = null;
+        return DB::transaction(function () use ($id, $fields, $tags) {
+            $article = $this->articlesRepository->findById($id);
+            $oldImageId = null;
 
-        if (! empty($fields['image'])) {
-            $image = $this->imagesService->createImage($fields['image']);
-            $fields['image_id'] = $image->id;
-            $oldImageId = $article->image_id;
-        }
-        $article = $this->articlesRepository->update($article, $fields);
-        $this->tagsService->sync($article, $tags);
-        if (! empty($oldImageId)) {
-            $this->imagesService->deleteImage($oldImageId);
-        }
-        $this->articlesRepository->flushCache();
-        return $article;
+            if (! empty($fields['image'])) {
+                $image = $this->imagesService->createImage($fields['image']);
+                $fields['image_id'] = $image->id;
+                $oldImageId = $article->image_id;
+            }
+            $article = $this->articlesRepository->update($article, $fields);
+            $this->tagsService->sync($article, $tags);
+            if (! empty($oldImageId)) {
+                $this->imagesService->deleteImage($oldImageId);
+            }
+            $this->articlesRepository->flushCache();
+            return $article;
+        });
     }
 
-    public function delete(int $id)
+    public function delete(int $id): void
     {
-        $this->articlesRepository->delete($id);
-        $this->articlesRepository->flushCache();
+        DB::transaction(function () use ($id) {
+            $this->articlesRepository->delete($id);
+            $this->articlesRepository->flushCache();
+        });
     }
 }
