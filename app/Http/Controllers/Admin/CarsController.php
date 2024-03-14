@@ -4,7 +4,10 @@ namespace App\Http\Controllers\Admin;
 
 use App\Contracts\Repositories\CarsRepositoryContract;
 use App\Contracts\Services\CarsServiceContract;
+use App\Contracts\Services\CreateCarServiceContract;
+use App\Contracts\Services\DeleteCarServiceContract;
 use App\Contracts\Services\FlashMessageContract;
+use App\Contracts\Services\UpdateCarServiceContract;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CarRequest;
 use App\Http\Requests\TagsRequest;
@@ -41,7 +44,7 @@ class CarsController extends Controller
     public function store(
         CarRequest $carRequest,
         TagsRequest $tagsRequest,
-        CarsServiceContract $carsService
+        CreateCarServiceContract $carsService
     ): RedirectResponse
     {
         try {
@@ -72,7 +75,7 @@ class CarsController extends Controller
         Car $car,
         CarRequest $carRequest,
         TagsRequest $tagsRequest,
-        CarsServiceContract $carsService
+        UpdateCarServiceContract $carsService
     ): RedirectResponse
     {
         try {
@@ -93,7 +96,7 @@ class CarsController extends Controller
      */
     public function destroy(
         Car $car,
-        CarsServiceContract $carsService
+        DeleteCarServiceContract $carsService
     ): RedirectResponse
     {
         try {

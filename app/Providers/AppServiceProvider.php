@@ -5,10 +5,16 @@ namespace App\Providers;
 use App\Contracts\Services\ArticlesServiceContract;
 use App\Contracts\Services\CarsServiceContract;
 use App\Contracts\Services\CatalogDataCollectorServiceContract;
+use App\Contracts\Services\CreateArticleServiceContract;
+use App\Contracts\Services\CreateCarServiceContract;
+use App\Contracts\Services\DeleteArticleServiceContract;
+use App\Contracts\Services\DeleteCarServiceContract;
 use App\Contracts\Services\FlashMessageContract;
 use App\Contracts\Services\ImagesServiceContract;
 use App\Contracts\Services\SlugServiceContract;
 use App\Contracts\Services\TagsSynchronizerServiceContract;
+use App\Contracts\Services\UpdateArticleServiceContract;
+use App\Contracts\Services\UpdateCarServiceContract;
 use App\Services\ArticlesService;
 use App\Services\CarsService;
 use App\Services\CatalogDataCollectorService;
@@ -35,8 +41,14 @@ class AppServiceProvider extends ServiceProvider
             return $faker;
         });
 
-        $this->app->singleton(ArticlesServiceContract::class, ArticlesService::class);
-        $this->app->singleton(CarsServiceContract::class, CarsService::class);
+        $this->app->singleton(CreateArticleServiceContract::class, ArticlesService::class);
+        $this->app->singleton(UpdateArticleServiceContract::class, ArticlesService::class);
+        $this->app->singleton(DeleteArticleServiceContract::class, ArticlesService::class);
+
+        $this->app->singleton(CreateCarServiceContract::class, CarsService::class);
+        $this->app->singleton(UpdateCarServiceContract::class, CarsService::class);
+        $this->app->singleton(DeleteCarServiceContract::class, CarsService::class);
+
         $this->app->singleton(FlashMessageContract::class, FlashMessage::class);
         $this->app->singleton(SlugServiceContract::class, SlugService::class);
         $this->app->singleton(CatalogDataCollectorServiceContract::class, CatalogDataCollectorService::class);
