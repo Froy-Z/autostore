@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Contracts\Repositories\CarsRepositoryContract;
-use App\Contracts\Services\CarsServiceContract;
 use App\Contracts\Services\CreateCarServiceContract;
 use App\Contracts\Services\DeleteCarServiceContract;
 use App\Contracts\Services\FlashMessageContract;
