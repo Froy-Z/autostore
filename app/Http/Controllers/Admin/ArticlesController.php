@@ -22,7 +22,7 @@ class ArticlesController extends Controller
     }
 
     /**
-     * Список статей для пользователей и администратора в разных стилях
+     * Список статей для администратора
      */
     public function index(Request $request): View
     {
@@ -70,7 +70,6 @@ class ArticlesController extends Controller
                 $tagsRequest->get('tags', []));
         } catch (\Exception $e) {
             $this->flashMessage->error('При создании новости произошла ошибка');
-            $this->flashMessage->error($e->getMessage());
             return redirect()->route('admin.articles.create');
         }
         $this->flashMessage->success('Новость успешно создана');
@@ -82,7 +81,8 @@ class ArticlesController extends Controller
      */
     public function show(string $slug): View
     {
-        return view('pages.articles.article_show', ['article' => $this->articlesRepository->findBySlug($slug)]);
+        $article = $this->articlesRepository->findBySlug($slug, ['image', 'tags']);
+        return view('pages.articles.article_show', ['article' => $article]);
     }
 
     /**
@@ -110,8 +110,7 @@ class ArticlesController extends Controller
                 $articleRequest->validated(),
                 $tagsRequest->get('tags', []));
         } catch (\Exception $e) {
-//            $this->flashMessage->error('При обновлении новости произошла ошибка');
-            $this->flashMessage->error($e->getMessage());
+            $this->flashMessage->error('При обновлении новости произошла ошибка');
             return redirect()->route('admin.articles.edit', ['article' => $article]);
         }
         $this->flashMessage->success('Новость успешно обновлена');

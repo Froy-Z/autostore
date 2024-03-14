@@ -30,6 +30,7 @@ class ArticlesService implements ArticlesServiceContract
         }
         $article = $this->articlesRepository->create(['slug' => $slug] + $fields);
         $this->tagsService->sync($article, $tags);
+        $this->articlesRepository->flushCache();
         return $article;
     }
 
@@ -48,11 +49,13 @@ class ArticlesService implements ArticlesServiceContract
         if (! empty($oldImageId)) {
             $this->imagesService->deleteImage($oldImageId);
         }
+        $this->articlesRepository->flushCache();
         return $article;
     }
 
     public function delete(int $id)
     {
         $this->articlesRepository->delete($id);
+        $this->articlesRepository->flushCache();
     }
 }

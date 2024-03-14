@@ -7,5 +7,5 @@ use Illuminate\Support\Collection;
 
 interface BannersRepositoryContract
 {
-    public function getRandomBanners(int $limit): Collection;
+    public function getRandomBanners(int $limit, array $relations = []): Collection;
 }

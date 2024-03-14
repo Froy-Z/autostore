@@ -29,6 +29,7 @@ class CarsService implements CarsServiceContract
             $this->carsRepository->syncCategories($car, $fields['categories']);
         }
         $this->tagsSynchronizerService->sync($car, $tags);
+        $this->carsRepository->flushCache();
         return $car;
     }
 
@@ -49,11 +50,13 @@ class CarsService implements CarsServiceContract
         if (! empty($oldImageId)) {
             $this->imagesService->deleteImage($oldImageId);
         }
+        $this->carsRepository->flushCache('');
         return $car;
     }
 
     public function delete(int $id)
     {
         $this->carsRepository->delete($id);
+        $this->carsRepository->flushCache();
     }
 }

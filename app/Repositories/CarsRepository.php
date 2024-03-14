@@ -3,19 +3,22 @@
 namespace App\Repositories;
 
 use App\Contracts\Repositories\CarsRepositoryContract;
-use App\Contracts\Repositories\ImagesRepositoryContract;
-use App\Contracts\Services\ImagesServiceContract;
 use App\DTO\CatalogFilterDTO;
 use App\Models\Car;
 use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Cache;
 
 class CarsRepository implements CarsRepositoryContract
 {
+    use FlushCache;
+    protected function cacheTags(): array
+    {
+        return ['cars'];
+    }
     public function __construct(
         private readonly Car $model,
-        private readonly ImagesServiceContract $imagesService,
     ) {
     }
 
@@ -28,22 +31,32 @@ class CarsRepository implements CarsRepositoryContract
     {
         return $this->getModel()->get();
     }
-
-    public function getNewCars(int $limit): Car|Collection
+    public function getNewCars(int $limit, array $relations = []): Car|Collection
     {
-        $query = $this->getModel()->newQuery()->where('is_new', '=', true)->take($limit);
-        return $query->get();
+        return Cache::tags(['cars', 'image'])->remember(
+            sprintf('mainPageCars|%s|%s', $limit, implode('|', $relations)),
+            3600,
+            fn () => $this->getModel()->newQuery()
+                ->where('is_new', '=', true)
+                ->with($relations)
+                ->take($limit)
+                ->get()
+        );
     }
-
-    public function findById(int $id): Car
+    public function findById(int $id, array $relations = []): Car
     {
-        return $this->getModel()->findOrFail($id);
+        return Cache::tags(['cars', 'carClass','engine', 'body', 'tags', 'categories', 'images', 'image'])->remember(
+            sprintf('carsById|%s|%s', $id, implode('|', $relations)),
+            3600,
+            fn () =>$this->getModel()
+                ->with($relations)
+                ->findOrFail($id)
+        );
     }
 
     public function create(array $fields): Car
     {
         return $this->getModel()->create($fields);
-
     }
 
     public function update(Car $car, array $fields): Car
@@ -65,8 +78,22 @@ class CarsRepository implements CarsRepositoryContract
         string $pageName = 'page',
         array $relations = [],
     ): LengthAwarePaginator {
-        return $this->catalogQuery($catalogFilterDTO)->with($relations)
-            ->paginate($perPage, $fields, $pageName, $page);
+        return Cache::tags(['cars', 'image'])->remember(
+            sprintf(
+                'paginateForCatalog|%s',
+                serialize([
+                    'filter' => $catalogFilterDTO,
+                    'fields' => $fields,
+                    'perPage' => $perPage,
+                    'page' => $page,
+                    'pageName' => $pageName,
+                    'relations' => $relations,
+                ])
+            ),
+            3600,
+            fn () => $this->catalogQuery($catalogFilterDTO)
+                ->with($relations)
+                ->paginate($perPage, $fields, $pageName, $page));
     }
 
     private function catalogQuery(CatalogFilterDTO $catalogFilterDTO): Builder

@@ -5,9 +5,15 @@ namespace App\Repositories;
 use App\Contracts\Repositories\CategoriesRepositoryContract;
 use App\Models\Category;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\Cache;
 
 class CategoriesRepository implements CategoriesRepositoryContract
 {
+    use FlushCache;
+    protected function cacheTags(): array
+    {
+        return ['categories'];
+    }
 
     public function __construct(
         private readonly Category $model
@@ -26,17 +32,27 @@ class CategoriesRepository implements CategoriesRepositoryContract
 
     public function findBySlug(string $slug, array $relations = []): Category
     {
-        return $this->getModel()
+        return Cache::tags($this->cacheTags())->remember(
+            sprintf("categoryBySlug|%s|%s", $slug, implode("|", $relations)),
+            3600,
+            fn () => $this->getModel()
             ->where('slug', '=', $slug)
             ->when($relations, fn ($query) => $query->with($relations))
-            ->firstOrFail();
+            ->firstOrFail()
+        );
     }
 
-    public function getCategoriesTree(): Collection
+    public function getCategoriesTree(?int $maxDepth = null): Collection
     {
-        return Category::withDepth()
-            ->having('depth', '<=', 1)
-            ->orderBy('sort')
-            ->get()->toTree();
+        return Cache::tags($this->cacheTags())->remember(
+            "categoriesTree|$maxDepth",
+            3600,
+            fn () => $this->getModel()
+                ->withDepth()
+                ->when($maxDepth, fn ($query) => $query->having('depth', '<=', $maxDepth))
+                ->orderBy('sort')
+                ->get()
+                ->toTree()
+        );
     }
 }

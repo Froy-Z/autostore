@@ -37,7 +37,7 @@ class CatalogController extends Controller
 
     public function product(int $id, CarsRepositoryContract $carsRepository): Factory|View|Application
     {
-        $car = $carsRepository->findById($id);
+        $car = $carsRepository->findById($id, ['carClass','engine', 'body', 'tags', 'categories', 'images', 'image']);
         return view('pages.cars.product', ['car' => $car]);
     }
 }
