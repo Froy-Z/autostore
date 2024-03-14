@@ -4,10 +4,10 @@
             <div class="col-span-3 border-r-0 sm:border-r pb-4 pr-4 text-center catalog-detail-slick-preview"
                  data-slick-carousel-detail>
                 <div class="mb-4 border rounded" data-slick-carousel-detail-items>
-                    <img class="w-full" src="/assets/pictures/car_K5-half.png" alt="" title="">
-                    <img class="w-full" src="/assets/pictures/car_k5_1.png" alt="" title="">
-                    <img class="w-full" src="/assets/pictures/car_k5_2.png" alt="" title="">
-                    <img class="w-full" src="/assets/pictures/car_k5_3.png" alt="" title="">
+                    <img class="w-full" src="{{ $car->imageUrl }}" alt="{{ $car->name }}">
+                    @foreach($car->images as $image)
+                        <img class="w-full" src="{{ $image->url }}" alt="{{ $car->name }}">
+                    @endforeach
                 </div>
                 <div class="flex space-x-4 justify-center items-center" data-slick-carousel-detail-pager>
                 </div>
@@ -37,24 +37,9 @@
                         <x-slot:label>Параметры</x-slot:label>
                         <x-panels.catalog.detail_product_props>
                             <x-car_specifications :car="$car"/>
-                            <table class="w-full">
-                                <tr>
-                                    <td class="py-2 text-gray-600 w-1/2">Теги:</td>
-                                    <td class="py-2 text-black font-bold w-1/2">
-                                        <div>
-                                            @if($car->is_new === 1)
-                                                <span
-                                                    class="text-sm text-white italic rounded bg-orange px-2">Новинка</span>
-                                            @endif
-                                            @isset($car->old_price)
-                                                <span class="text-sm text-white italic rounded bg-orange px-2">Со скидкой</span>
-                                            @endisset
-                                            <span
-                                                class="text-sm text-white italic rounded bg-orange px-2">{{ $car->name }}</span>
-                                        </div>
-                                    </td>
-                                </tr>
-                            </table>
+                            @if($car->tags->isNotEmpty())
+                                <x-panels.tags :tags="$car->tags" />
+                            @endif
                         </x-panels.catalog.detail_product_props>
                     </x-panels.accordion>
                     <x-panels.accordion>

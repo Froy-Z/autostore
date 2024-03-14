@@ -6,6 +6,7 @@ use App\Models\Car;
 use App\Models\CarBody;
 use App\Models\CarClass;
 use App\Models\CarEngine;
+use App\Models\Image;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -26,6 +27,7 @@ class CarFactory extends Factory
             'description' => $this->faker->paragraph(),
             'price' => $price = round(rand(1_500_000, 10_000_000), -4), // цена БЕЗ скидки
             'old_price' => $this->faker->optional()->numberBetween((int) ($price * 1.1), (int) ($price * 1.2)), // цена СО скидкой
+            'image_id' => Image::factory(),
             'salon' => $this->faker->optional()->randomElement($this->salons()),
             'kpp' => $this->faker->optional()->randomElement($this->transmissions()),
             'year' => $year,

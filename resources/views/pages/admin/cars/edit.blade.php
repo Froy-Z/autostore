@@ -3,7 +3,7 @@
         <main class="flex-1 container mx-auto bg-white">
             <x-panels.messages.flashes />
             <x-panels.messages.form_validation_errors :messages="$messages ?? '' " />
-            <x-forms.form action="{{ route('admin.cars.update', $car) }}" method="post">
+            <x-forms.form action="{{ route('admin.cars.update', $car) }}" method="post" enctype="multipart/form-data">
                 @method('PATCH')
                 <x-forms.concrete_forms_fields.admin_cars_form_fields :car="$car"/>
                 <x-forms.row>

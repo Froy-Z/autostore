@@ -11,6 +11,23 @@
     />
 </x-forms.groups.group>
 
+<x-forms.groups.checkbox_group>
+    <x-slot:label>Опубликован</x-slot:label>
+    <x-forms.inputs.checkbox
+        name="published_at"
+        value="{{ now() }}"
+    />
+</x-forms.groups.checkbox_group>
+
+<x-forms.groups.group for="fieldArticleImage" error="{{ $errors->first('image') }}">
+    <x-slot:label>Изображение новости</x-slot:label>
+    <x-forms.inputs.one_file
+        id="fieldArticleImage"
+        name="image"
+        value="{{ $article->imageUrl }}"
+    />
+</x-forms.groups.group>
+
 <x-forms.groups.group for="fieldArticleDescription" error="{{ $errors->first('description') }}">
     <x-slot:label>Краткое описание новости</x-slot:label>
     <x-forms.inputs.text
@@ -33,11 +50,13 @@
     />
 </x-forms.groups.group>
 
-<x-forms.groups.checkbox_group>
-    <x-slot:label>Опубликован</x-slot:label>
-    <x-forms.inputs.checkbox
-        name="published_at"
-        value="{{ now() }}"
+<x-forms.groups.group for="fieldArticleTags" error="{{ $errors->first('tags') }}">
+    <x-slot:label>Теги</x-slot:label>
+    <x-forms.inputs.text
+        id="fieldArticleTags"
+        name="tags"
+        placeholder="Парадигма, Архетип, Киа Seed"
+        value="{{ old('tags', $article->tags->pluck('name')->implode(', ')) }}"
+        error="{{ $errors->first('tags') }}"
     />
-</x-forms.groups.checkbox_group>
-
+</x-forms.groups.group>

@@ -2,92 +2,110 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Contracts\Repositories\CarsRepositoryContract;
+use App\Contracts\Services\CarsServiceContract;
+use App\Contracts\Services\CreateCarServiceContract;
+use App\Contracts\Services\DeleteCarServiceContract;
+use App\Contracts\Services\FlashMessageContract;
+use App\Contracts\Services\UpdateCarServiceContract;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CarRequest;
-use App\Models\Article;
+use App\Http\Requests\TagsRequest;
 use App\Models\Car;
-use App\Services\FlashMessage;
-use App\Services\SlugService;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
+use Illuminate\View\View;
 
 class CarsController extends Controller
 {
-    /**
-     * Показать список автомобилей
-     */
-    public function index()
+    public function __construct(
+        private readonly CarsRepositoryContract $carsRepository,
+        private readonly FlashMessageContract $flashMessage,
+    ) {
+    }
+
+    public function index(): View
     {
-        $cars = Car::oldest('id')->get();
+        $cars = $this->carsRepository->findAll();
         return view('pages.admin.cars.index', ['cars' => $cars]);
     }
 
     /**
      * Показать форму создания автомобиля
      */
-    public function create()
+    public function create(): View
     {
-        return view('pages.admin.cars.create', ['car' => new Car()]);
+        $car = $this->carsRepository->getModel();
+        return view('pages.admin.cars.create', ['car' => $car]);
     }
 
     /**
      * Добавление автомобиля в БД на основе POST запроса
      */
-    public function store(CarRequest $request)
+    public function store(
+        CarRequest $carRequest,
+        TagsRequest $tagsRequest,
+        CreateCarServiceContract $carsService
+    ): RedirectResponse
     {
         try {
-            Car::create($request->validated());
+            $carsService->create(
+                $carRequest->validated(),
+                $tagsRequest->get('tags', []));
         } catch (\Exception $e) {
-            $flashMessage = new FlashMessage();
-            $flashMessage->error($e->getMessage());
+            $this->flashMessage->error('При создании модели произошла ошибка');
             return redirect()->route('admin.cars.create');
         }
-        $flashMessage = new FlashMessage();
-        $flashMessage->success('Модель успешно обновлена');
+        $this->flashMessage->success('Модель успешно создана');
         return redirect()->route('admin.cars.index');
     }
 
     /**
      * Показать форму для редактирования автомобиля
      */
-    public function edit(Car $car)
+    public function edit(int $id): View
     {
-
-        return view('pages.admin.cars.edit', ['car' => $car] );
+        $car = $this->carsRepository->findById($id);
+        return view('pages.admin.cars.edit', ['car' => $car]);
     }
 
     /**
      * Обновить и сохранить параметры автомобиля
      */
-    public function update(CarRequest $request, Car $car)
+    public function update(
+        Car $car,
+        CarRequest $carRequest,
+        TagsRequest $tagsRequest,
+        UpdateCarServiceContract $carsService
+    ): RedirectResponse
     {
         try {
-            $car->update($request->validated());
+            $carsService->update(
+                $car->id,
+                $carRequest->validated(),
+                $tagsRequest->get('tags', []));
         } catch (\Exception $e) {
-            $flashMessage = new FlashMessage();
-            $flashMessage->error($e->getMessage());
+            $this->flashMessage->error('При обновлении модели произошла ошибка');
             return redirect()->route('admin.cars.edit', ['car' => $car]);
         }
-        $flashMessage = new FlashMessage();
-        $flashMessage->success('Модель успешно обновлена');
+        $this->flashMessage->success('Модель успешно обновлена');
         return redirect()->route('admin.cars.index');
     }
 
     /**
      * Удалить автомобиль из БД
      */
-    public function destroy(Car $car): RedirectResponse
+    public function destroy(
+        Car $car,
+        DeleteCarServiceContract $carsService
+    ): RedirectResponse
     {
         try {
-            $car->delete();
+            $carsService->delete($car->id);
         } catch (\Exception $e) {
-            $flashMessage = new FlashMessage();
-            $flashMessage->error('При удалении модели произошла ошибка');
+            $this->flashMessage->error('При удалении модели произошла ошибка');
             return redirect()->route('admin.cars.index');
         }
-        $flashMessage = new FlashMessage();
-        $flashMessage->success('Модель успешно удалена');
+        $this->flashMessage->success('Модель успешно удалена');
         return redirect()->route('admin.cars.index');
-
     }
 }
