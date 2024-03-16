@@ -14,6 +14,7 @@ Route::get('/contacts', [PagesController::class, 'contacts'])->name('contacts');
 Route::get('/sale',     [PagesController::class, 'sale'])->name('sale');
 Route::get('/finance',  [PagesController::class, 'finance'])->name('finance');
 Route::get('/clients',  [PagesController::class, 'clients'])->name('clients');
+Route::get('/salons',   [PagesController::class, 'salons'])->name('salons');
 
 Route::prefix('admin')->name('admin.')->group(function (Router $router) {
     $router->get('/', [AdminPagesController::class, 'admin'])->name('admin');
