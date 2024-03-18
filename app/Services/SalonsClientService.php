@@ -8,31 +8,21 @@ use Illuminate\Support\Facades\Http;
 
 class SalonsClientService implements SalonsClientServiceContract
 {
-    private string $login;
-    private string $password;
-    private string $url;
     public function __construct(
-        private readonly string $baseUrl
+        private readonly string $baseUrl,
+        private readonly string $username,
+        private readonly string $password,
     ) {
-        $this->login = 'student';
-        $this->password = 'password';
-        $this->url = '/api/v1/salons';
     }
 
-    public function findAll(): ?array
+    public function getSalons(?int $limit, ?bool $random): ?array
     {
-        return $this->getClient()->get($this->url)->json();
+        return $this->getClient($limit, $random)->get('/api/v1/salons')->json();
     }
 
-    public function getRandomSalons(int $limit, bool $random): ?array
+    private function getClient(?int $limit, ?bool $random): PendingRequest
     {
-        return $this->getClient($limit, $random)->get($this->url)->json();
-
-    }
-
-    private function getClient(int $limit = null, bool $random = false): PendingRequest
-    {
-        $response = Http::baseUrl($this->baseUrl)->withBasicAuth($this->login, $this->password);
+        $response = Http::baseUrl($this->baseUrl)->withBasicAuth($this->username, $this->password);
         if ($limit != null) {
             $response->withQueryParameters(['limit' => $limit, 'in_random_order' => $random]);
         }

@@ -32,7 +32,7 @@ class PagesController extends Controller
 
     public function salons(SalonsRepositoryContract $repositoryContract): Factory|View|Application
     {
-        $salons = $repositoryContract->findAll();
+        $salons = $repositoryContract->getSalons();
         return view('pages.salons', ['salons' => $salons]);
     }
     public function about(): Factory|View|Application

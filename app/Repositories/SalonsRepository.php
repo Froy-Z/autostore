@@ -19,41 +19,27 @@ class SalonsRepository implements SalonsRepositoryContract
     {
         return ['salons'];
     }
-
-    public function findAll(): ?Collection
+    public function getSalons(?int $limit = null, ?bool $random = null): ?Collection
     {
-        return Cache::tags($this->cacheTags())->remember(
-            'salons',
-            3600,
-            function () {
-                $salons = collect();
-                $data = $this->salonsClientService->findAll();
-                if (is_null($data)) {
-                    return collect();
-                }
-                foreach ($data as $salon) {
-                    $salons->push($this->createModelFromResponseItem($salon));
-                }
-                return $salons;
-            });
-    }
-
-    public function getRandomSalons(int $limit, bool $random): ?Collection
-    {
-        return Cache::tags('randomSalons')->remember(
-            sprintf('randomSalons|%d|%s', $limit, implode('|', [$random])),
-            300,
+        $isRandom = is_null($random);
+        $cacheTags = $isRandom ? $this->cacheTags() : 'randomSalons';
+        $cacheRemember = $isRandom ? 'salons' : sprintf('randomSalons|%d|%s', $limit, implode('|', [$random]));
+        $cacheTimeLife = $isRandom ? 3600 : 300;
+        return Cache::tags($cacheTags)->remember(
+            $cacheRemember,
+            $cacheTimeLife,
             function () use ($limit, $random) {
                 $salons = collect();
-                $data = $this->salonsClientService->getRandomSalons($limit, $random);
+                $data = $this->salonsClientService->getSalons($limit, $random);
                 if (is_null($data)) {
-                    return collect();
+                    return $salons;
                 }
                 foreach ($data as $salon) {
                     $salons->push($this->createModelFromResponseItem($salon));
                 }
                 return $salons;
-            });
+            }
+        );
     }
 
     private function createModelFromResponseItem($salon): ApiSalonModel

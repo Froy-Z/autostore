@@ -55,7 +55,12 @@ class AppServiceProvider extends ServiceProvider
         });
 
         $this->app->singleton(SalonsClientServiceContract::class, function () {
-            return $this->app->make(SalonsClientService::class, ['baseUrl' => config('services.salonApi.url')]);
+            return $this->app->make(SalonsClientService::class,
+                [
+                    'baseUrl' => config('services.salonApi.baseUrl'),
+                    'username' => config('services.salonApi.username'),
+                    'password' => config('services.salonApi.password'),
+                ]);
         });
     }
 

@@ -32,6 +32,8 @@ return [
     ],
 
     'salonApi' => [
-        'url' => env('SALONS_API_SERVICE_URL'),
+        'baseUrl' => env('SALONS_API_SERVICE_BASE_URL'),
+        'username' => env('SALONS_API_SERVICE_USERNAME'),
+        'password' => env('SALONS_API_SERVICE_PASSWORD'),
     ],
 ];

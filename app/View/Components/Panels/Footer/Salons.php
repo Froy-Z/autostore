@@ -19,7 +19,7 @@ class Salons extends Component
 
     public function render(): View|Closure|string
     {
-        $salons = $this->salonsRepository->getRandomSalons(2, true);
+        $salons = $this->salonsRepository->getSalons(2, true);
         return view('components.panels.footer.salons', ['salons' => $salons]);
     }
 }
