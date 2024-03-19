@@ -51,6 +51,10 @@ class PagesController extends Controller
     {
         return view('pages.finance');
     }
+    public function account(): Factory|View|Application
+    {
+        return view('pages.account');
+    }
     public function clients(): Factory|View|Application
     {
         $cars = $this->carsRepository->findAll();
