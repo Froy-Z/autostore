@@ -1,4 +1,7 @@
 <x-layouts.inner pageTitle="{{ $car->name }}" title="{{ $car->name }}" name="{{ $car->name }}">
+    <x-slot name="breadcrumbs">
+        {{ Breadcrumbs::render('product', $car) }}
+    </x-slot>
     <x-slot:content>
         <div class="flex-1 grid grid-cols-1 lg:grid-cols-5 border-b w-full">
             <div class="col-span-3 border-r-0 sm:border-r pb-4 pr-4 text-center catalog-detail-slick-preview"
