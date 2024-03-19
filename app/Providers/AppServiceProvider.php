@@ -11,6 +11,7 @@ use App\Contracts\Services\FlashMessageContract;
 use App\Contracts\Services\ImagesServiceContract;
 use App\Contracts\Services\SalonsClientServiceContract;
 use App\Contracts\Services\SlugServiceContract;
+use App\Contracts\Services\StatisticsServiceContract;
 use App\Contracts\Services\TagsSynchronizerServiceContract;
 use App\Contracts\Services\UpdateArticleServiceContract;
 use App\Contracts\Services\UpdateCarServiceContract;
@@ -21,6 +22,7 @@ use App\Services\FlashMessage;
 use App\Services\ImagesService;
 use App\Services\SalonsClientService;
 use App\Services\SlugService;
+use App\Services\StatisticsService;
 use App\Services\TagsSynchronizerService;
 use Faker\Factory;
 use Faker\Generator;
@@ -50,6 +52,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(SlugServiceContract::class, SlugService::class);
         $this->app->singleton(CatalogDataCollectorServiceContract::class, CatalogDataCollectorService::class);
         $this->app->singleton(TagsSynchronizerServiceContract::class, TagsSynchronizerService::class);
+        $this->app->singleton(StatisticsServiceContract::class, StatisticsService::class);
         $this->app->singleton(ImagesServiceContract::class, function () {
             return $this->app->make(ImagesService::class, ['disk' => 'public']);
         });
