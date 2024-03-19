@@ -46,6 +46,12 @@ Breadcrumbs::for('salons', function (BreadcrumbTrail $trail) {
     $trail->push('Салоны', route('salons'));
 });
 
+// Главная > Личный кабинет
+Breadcrumbs::for('account', function (BreadcrumbTrail $trail) {
+    $trail->parent('home');
+    $trail->push('Личный кабинет', route('account'));
+});
+
 // Главная > Каталог
 Breadcrumbs::for('catalog', function (BreadcrumbTrail $trail) {
     $trail->parent('home');
