@@ -29,6 +29,10 @@ class InformationMenu extends Component
             'title' => 'Для клиентов',
             'route' => 'clients',
         ],
+        [
+            'title' => 'Салоны',
+            'route' => 'salons',
+        ],
     ];
     public function __construct(
         public readonly string $template

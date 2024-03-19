@@ -2,8 +2,6 @@
 
 namespace App\Providers;
 
-use App\Contracts\Services\ArticlesServiceContract;
-use App\Contracts\Services\CarsServiceContract;
 use App\Contracts\Services\CatalogDataCollectorServiceContract;
 use App\Contracts\Services\CreateArticleServiceContract;
 use App\Contracts\Services\CreateCarServiceContract;
@@ -11,6 +9,7 @@ use App\Contracts\Services\DeleteArticleServiceContract;
 use App\Contracts\Services\DeleteCarServiceContract;
 use App\Contracts\Services\FlashMessageContract;
 use App\Contracts\Services\ImagesServiceContract;
+use App\Contracts\Services\SalonsClientServiceContract;
 use App\Contracts\Services\SlugServiceContract;
 use App\Contracts\Services\TagsSynchronizerServiceContract;
 use App\Contracts\Services\UpdateArticleServiceContract;
@@ -20,6 +19,7 @@ use App\Services\CarsService;
 use App\Services\CatalogDataCollectorService;
 use App\Services\FlashMessage;
 use App\Services\ImagesService;
+use App\Services\SalonsClientService;
 use App\Services\SlugService;
 use App\Services\TagsSynchronizerService;
 use Faker\Factory;
@@ -30,9 +30,6 @@ use QSchool\FakerImageProvider\FakerImageProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
-    /**
-     * Register any application services.
-     */
     public function register(): void
     {
         $this->app->singleton(Generator::class, function () {
@@ -56,11 +53,17 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(ImagesServiceContract::class, function () {
             return $this->app->make(ImagesService::class, ['disk' => 'public']);
         });
+
+        $this->app->singleton(SalonsClientServiceContract::class, function () {
+            return $this->app->make(SalonsClientService::class,
+                [
+                    'baseUrl' => config('services.salonApi.baseUrl'),
+                    'username' => config('services.salonApi.username'),
+                    'password' => config('services.salonApi.password'),
+                ]);
+        });
     }
 
-    /**
-     * Bootstrap any application services.
-     */
     public function boot(): void
     {
         //

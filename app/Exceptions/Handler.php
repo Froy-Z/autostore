@@ -3,7 +3,7 @@
 namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
-use Nette\Schema\ValidationException;
+use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 use Throwable;
 
@@ -28,7 +28,7 @@ class Handler extends ExceptionHandler
             return response()->json([
                 'success' => false,
                 'error' => "Ошибка валидации"
-            ],$this->isHttpException($e) ? $e->getStatusCode() : 500);
+            ],$this->isHttpException($e) ? $e->getCode() : 500);
         }
 
         if ($e instanceof UnauthorizedHttpException) {
