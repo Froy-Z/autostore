@@ -24,18 +24,20 @@ class Handler extends ExceptionHandler
 
     public function render($request, Throwable $e)
     {
-        if ($e instanceof ValidationException) {
-            return response()->json([
-                'success' => false,
-                'error' => "Ошибка валидации"
-            ],$this->isHttpException($e) ? $e->getCode() : 500);
-        }
+        if ($request->is('api/v1/*')) {
+            if ($e instanceof ValidationException) {
+                return response()->json([
+                    'success' => false,
+                    'error' => "Ошибка валидации"
+                ],$this->isHttpException($e) ? $e->getCode() : 500);
+            }
 
-        if ($e instanceof UnauthorizedHttpException) {
-            return response()->json([
-                'success' => false,
-                'error' => "Неавторизованный доступ"
-            ],$this->isHttpException($e) ? $e->getStatusCode() : 401);
+            if ($e instanceof UnauthorizedHttpException) {
+                return response()->json([
+                    'success' => false,
+                    'error' => "Неавторизованный доступ"
+                ],$this->isHttpException($e) ? $e->getStatusCode() : 401);
+            }
         }
 
         return parent::render($request, $e);
