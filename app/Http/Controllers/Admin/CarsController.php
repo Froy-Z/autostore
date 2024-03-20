@@ -24,6 +24,7 @@ class CarsController extends Controller
 
     public function index(): View
     {
+        $this->authorize('viewAny', Car::class);
         $cars = $this->carsRepository->findAll();
         return view('pages.admin.cars.index', ['cars' => $cars]);
     }
@@ -33,6 +34,7 @@ class CarsController extends Controller
      */
     public function create(): View
     {
+        $this->authorize('create', Car::class);
         $car = $this->carsRepository->getModel();
         return view('pages.admin.cars.create', ['car' => $car]);
     }
@@ -46,6 +48,7 @@ class CarsController extends Controller
         CreateCarServiceContract $carsService
     ): RedirectResponse
     {
+        $this->authorize('create', Car::class);
         try {
             $carsService->create(
                 $carRequest->validated(),
@@ -64,6 +67,7 @@ class CarsController extends Controller
     public function edit(int $id): View
     {
         $car = $this->carsRepository->findById($id);
+        $this->authorize('update', $car);
         return view('pages.admin.cars.edit', ['car' => $car]);
     }
 
@@ -77,6 +81,7 @@ class CarsController extends Controller
         UpdateCarServiceContract $carsService
     ): RedirectResponse
     {
+        $this->authorize('update', $car);
         try {
             $carsService->update(
                 $car->id,
@@ -98,6 +103,7 @@ class CarsController extends Controller
         DeleteCarServiceContract $carsService
     ): RedirectResponse
     {
+        $this->authorize('delete', $car);
         try {
             $carsService->delete($car->id);
         } catch (\Exception $e) {

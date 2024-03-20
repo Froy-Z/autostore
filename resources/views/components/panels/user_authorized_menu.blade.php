@@ -11,10 +11,12 @@
         <x-icons.house class="inline-block text-orange h-4 w-4" />
         <span>Личный кабинет</span>
     </a>
+    @admin()
     <a class="text-gray-500 hover:text-orange flex items-center space-x-1" href="{{ route('admin.admin') }}">
         <x-icons.pankakes class="inline-block text-orange h-4 w-4" />
         <span>Админка</span>
     </a>
+    @endadmin
     <form method="post" action="{{ route('logout') }}" class="inline-block">
         @csrf
         <button type="submit" class="text-gray-500 hover:text-orange flex items-center space-x-1">
