@@ -6,5 +6,5 @@ use App\Models\Car;
 
 interface CreateCarServiceContract
 {
-    public function create(array $fields, array $tags): Car;
+    public function create(array $fields, array $tags = [], array $categories = []): Car;
 }

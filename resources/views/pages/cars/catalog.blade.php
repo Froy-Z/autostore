@@ -1,4 +1,7 @@
 <x-layouts.inner pageTitle="Каталог" title="Каталог">
+    <x-slot name="breadcrumbs">
+        {{ Breadcrumbs::render('catalog') }}
+    </x-slot>
     <x-slot:content>
         <x-panels.catalog.filter :filterValues="$catalogData->filter"
                                  :currentCategory="$catalogData->currentCategory"/>

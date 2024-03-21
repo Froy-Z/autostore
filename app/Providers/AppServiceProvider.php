@@ -2,8 +2,6 @@
 
 namespace App\Providers;
 
-use App\Contracts\Services\ArticlesServiceContract;
-use App\Contracts\Services\CarsServiceContract;
 use App\Contracts\Services\CatalogDataCollectorServiceContract;
 use App\Contracts\Services\CreateArticleServiceContract;
 use App\Contracts\Services\CreateCarServiceContract;
@@ -11,28 +9,34 @@ use App\Contracts\Services\DeleteArticleServiceContract;
 use App\Contracts\Services\DeleteCarServiceContract;
 use App\Contracts\Services\FlashMessageContract;
 use App\Contracts\Services\ImagesServiceContract;
+use App\Contracts\Services\RolesServiceContract;
+use App\Contracts\Services\SalonsClientServiceContract;
 use App\Contracts\Services\SlugServiceContract;
+use App\Contracts\Services\StatisticsServiceContract;
 use App\Contracts\Services\TagsSynchronizerServiceContract;
 use App\Contracts\Services\UpdateArticleServiceContract;
 use App\Contracts\Services\UpdateCarServiceContract;
+use App\Models\User;
 use App\Services\ArticlesService;
 use App\Services\CarsService;
 use App\Services\CatalogDataCollectorService;
 use App\Services\FlashMessage;
 use App\Services\ImagesService;
+use App\Services\RolesService;
+use App\Services\SalonsClientService;
 use App\Services\SlugService;
+use App\Services\StatisticsService;
 use App\Services\TagsSynchronizerService;
 use Faker\Factory;
 use Faker\Generator;
+use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 use QSchool\FakerImageProvider\FakerImageProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
-    /**
-     * Register any application services.
-     */
     public function register(): void
     {
         $this->app->singleton(Generator::class, function () {
@@ -53,16 +57,24 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(SlugServiceContract::class, SlugService::class);
         $this->app->singleton(CatalogDataCollectorServiceContract::class, CatalogDataCollectorService::class);
         $this->app->singleton(TagsSynchronizerServiceContract::class, TagsSynchronizerService::class);
+        $this->app->singleton(StatisticsServiceContract::class, StatisticsService::class);
+        $this->app->singleton(RolesServiceContract::class, RolesService::class);
         $this->app->singleton(ImagesServiceContract::class, function () {
             return $this->app->make(ImagesService::class, ['disk' => 'public']);
         });
+
+        $this->app->singleton(SalonsClientServiceContract::class, function () {
+            return $this->app->make(SalonsClientService::class,
+                [
+                    'baseUrl' => config('services.salonApi.baseUrl'),
+                    'username' => config('services.salonApi.username'),
+                    'password' => config('services.salonApi.password'),
+                ]);
+        });
     }
 
-    /**
-     * Bootstrap any application services.
-     */
     public function boot(): void
     {
-        //
+        Blade::if('admin', fn () => Gate::allows('admin'));
     }
 }

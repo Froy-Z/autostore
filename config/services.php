@@ -31,4 +31,9 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'salonApi' => [
+        'baseUrl' => env('SALONS_API_SERVICE_BASE_URL'),
+        'username' => env('SALONS_API_SERVICE_USERNAME'),
+        'password' => env('SALONS_API_SERVICE_PASSWORD'),
+    ],
 ];

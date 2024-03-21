@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Contracts\Repositories\ArticlesRepositoryContract;
 use App\Contracts\Repositories\BannersRepositoryContract;
 use App\Contracts\Repositories\CarsRepositoryContract;
+use App\Contracts\Repositories\SalonsRepositoryContract;
+use App\DTO\ApiSalonModel;
 use App\Models\Car;
 use Illuminate\Foundation\Application;
 use Illuminate\Http\Request;
@@ -28,6 +30,11 @@ class PagesController extends Controller
         return view('pages.homepage', ['cars' => $cars, 'articles' => $articles, 'banners' => $banners]);
     }
 
+    public function salons(SalonsRepositoryContract $repositoryContract): Factory|View|Application
+    {
+        $salons = $repositoryContract->getSalons();
+        return view('pages.salons', ['salons' => $salons]);
+    }
     public function about(): Factory|View|Application
     {
         return view('pages.about');
@@ -43,6 +50,10 @@ class PagesController extends Controller
     public function finance(): Factory|View|Application
     {
         return view('pages.finance');
+    }
+    public function account(): Factory|View|Application
+    {
+        return view('pages.account');
     }
     public function clients(): Factory|View|Application
     {

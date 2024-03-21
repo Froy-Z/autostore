@@ -9,8 +9,12 @@ use App\Contracts\Services\ImagesServiceContract;
 use App\Contracts\Services\SlugServiceContract;
 use App\Contracts\Services\TagsSynchronizerServiceContract;
 use App\Contracts\Services\UpdateArticleServiceContract;
+use App\Events\ArticleCreatedEvent;
+use App\Events\ArticleDeletedEvent;
+use App\Events\ArticleUpdatedEvent;
 use App\Models\Article;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Event;
 
 class ArticlesService implements CreateArticleServiceContract, UpdateArticleServiceContract, DeleteArticleServiceContract
 {
@@ -33,6 +37,7 @@ class ArticlesService implements CreateArticleServiceContract, UpdateArticleServ
             $article = $this->articlesRepository->create(['slug' => $slug] + $fields);
             $this->tagsService->sync($article, $tags);
             $this->articlesRepository->flushCache();
+            Event::dispatch(new ArticleCreatedEvent($article));
             return $article;
         });
     }
@@ -54,6 +59,7 @@ class ArticlesService implements CreateArticleServiceContract, UpdateArticleServ
                 $this->imagesService->deleteImage($oldImageId);
             }
             $this->articlesRepository->flushCache();
+            Event::dispatch(new ArticleUpdatedEvent($article));
             return $article;
         });
     }
@@ -61,8 +67,10 @@ class ArticlesService implements CreateArticleServiceContract, UpdateArticleServ
     public function delete(int $id): void
     {
         DB::transaction(function () use ($id) {
+            $article = $this->articlesRepository->findById($id);
             $this->articlesRepository->delete($id);
             $this->articlesRepository->flushCache();
+            Event::dispatch(new ArticleDeletedEvent($article));
         });
     }
 }

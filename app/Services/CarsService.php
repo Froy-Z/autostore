@@ -21,15 +21,15 @@ class CarsService implements CreateCarServiceContract, UpdateCarServiceContract,
     ) {
     }
 
-    public function create(array $fields, array $tags): Car
+    public function create(array $fields, array $tags = [], array $categories = []): Car
     {
-        return DB::transaction(function () use ($fields, $tags) {
+        return DB::transaction(function () use ($fields, $tags, $categories) {
             if (! empty($fields['image'])) {
                 $image = $this->imagesService->createImage($fields['image']);
                 $fields['image_id'] = $image->id;
             }
             $car = $this->carsRepository->getModel()->create($fields);
-            if(! empty($fields['categories'])) {
+            if(! empty($categories)) {
                 $this->carsRepository->syncCategories($car, $fields['categories']);
             }
             $this->tagsService->sync($car, $tags);
@@ -38,9 +38,9 @@ class CarsService implements CreateCarServiceContract, UpdateCarServiceContract,
         });
     }
 
-    public function update(int $id, array $fields, array $tags = []): Car
+    public function update(int $id, array $fields, array $tags = [], array $categories = []): Car
     {
-        return DB::transaction(function () use ($id, $fields, $tags) {
+        return DB::transaction(function () use ($id, $fields, $tags, $categories) {
             $car = $this->carsRepository->findById($id);
             $oldImageId = null;
 
@@ -51,7 +51,7 @@ class CarsService implements CreateCarServiceContract, UpdateCarServiceContract,
             }
             $car = $this->carsRepository->update($car, $fields);
             $this->tagsService->sync($car, $tags);
-            if ($fields['categories'] !== null) {
+            if (! empty($categories)) {
                 $this->carsRepository->syncCategories($car, $fields['categories']);
             }
             if (! empty($oldImageId)) {

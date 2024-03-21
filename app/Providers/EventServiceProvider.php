@@ -2,10 +2,16 @@
 
 namespace App\Providers;
 
+use App\Events\ArticleCreatedEvent;
+use App\Events\ArticleDeletedEvent;
+use App\Events\ArticleUpdatedEvent;
+use App\Listeners\LogArticleActionSubscriber;
+use App\Listeners\SendMailOnArticleCreatedListener;
+use App\Listeners\SendMailOnArticleDeletedListener;
+use App\Listeners\SendMailOnArticleUpdatedListener;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
-use Illuminate\Support\Facades\Event;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -18,6 +24,19 @@ class EventServiceProvider extends ServiceProvider
         Registered::class => [
             SendEmailVerificationNotification::class,
         ],
+        ArticleCreatedEvent::class => [
+            SendMailOnArticleCreatedListener::class
+        ],
+        ArticleUpdatedEvent::class => [
+            SendMailOnArticleUpdatedListener::class
+        ],
+        ArticleDeletedEvent::class => [
+            SendMailOnArticleDeletedListener::class
+        ],
+    ];
+
+    protected $subscribe = [
+        LogArticleActionSubscriber::class,
     ];
 
     /**

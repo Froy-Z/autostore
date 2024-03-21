@@ -29,6 +29,7 @@ class ArticlesController extends Controller
      */
     public function index(Request $request): View
     {
+        $this->authorize('viewAny', Article::class);
         $articles = $this->articlesRepository->paginateForArticles(
             false,
             'desc',
@@ -44,8 +45,8 @@ class ArticlesController extends Controller
      */
     public function view(): View
     {
+        $this->authorize('view', Article::class);
         $articles = $this->articlesRepository->findAll();
-
         return view('pages.admin.articles.view', ['articles' => $articles]);
     }
 
@@ -55,6 +56,7 @@ class ArticlesController extends Controller
     public function create(): View
     {
         $article = $this->articlesRepository->getModel();
+        $this->authorize('create', $article);
         return view('pages.admin.articles.create', ['article' => $article]);
     }
 
@@ -67,6 +69,7 @@ class ArticlesController extends Controller
         CreateArticleServiceContract $articlesService,
     ): RedirectResponse
     {
+        $this->authorize('create', Article::class);
         try {
             $articlesService->create(
                 $articleRequest->validated(),
@@ -94,6 +97,7 @@ class ArticlesController extends Controller
     public function edit(int $id): View
     {
         $article = $this->articlesRepository->findById($id);
+        $this->authorize('update', $article);
         return view('pages.admin.articles.edit', ['article' => $article]);
     }
 
@@ -107,6 +111,7 @@ class ArticlesController extends Controller
         UpdateArticleServiceContract $articlesService,
     ): RedirectResponse
     {
+        $this->authorize('update', $article);
         try {
             $articlesService->update(
                 $article->id,
@@ -128,6 +133,7 @@ class ArticlesController extends Controller
         DeleteArticleServiceContract $articlesService
     ): RedirectResponse
     {
+        $this->authorize('delete', $article);
         try {
             $articlesService->delete($article->id);
         } catch (\Exception $e) {
