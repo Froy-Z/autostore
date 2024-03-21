@@ -17,7 +17,7 @@ Route::get('/clients',  [PagesController::class, 'clients'])->name('clients');
 Route::get('/salons',   [PagesController::class, 'salons'])->name('salons');
 Route::get('/account',  [PagesController::class, 'account'])->name('account')->middleware('auth');
 
-Route::prefix('admin')->name('admin.')->middleware('auth')->group(function (Router $router) {
+Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(function (Router $router) {
     $router->get('/', [AdminPagesController::class, 'admin'])->name('admin');
     $router->get('articles/view', [ArticlesController::class, 'view'])->name('view');
     $router->resource('cars', CarsController::class)->except('show');
@@ -28,7 +28,6 @@ Route::prefix('/catalog')->group(function (Router $router) {
     $router->get('/{slug?}', [CatalogController::class, 'catalog'])->name('catalog');
     $router->get('/product/{id}', [CatalogController::class, 'product'])->name('product');
 });
-
 
 Route::prefix('/articles')->group(function (Router $router) {
     $router->get('/', [PagesController::class, 'articles'])->name('articles');

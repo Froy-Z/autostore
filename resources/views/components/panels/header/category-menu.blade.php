@@ -1,8 +1,10 @@
 @props(['categories'])
 <nav class="order-1">
     <ul class="block lg:flex">
+        @admin
         <li class="group"><a class="inline-block p-4 text-black font-bold border-l border-r border-transparent group-hover:text-orange"
                              href="{{ route('admin.admin') }}">Админ</a></li>
+        @endadmin
         <li class="group"><a class="inline-block p-4 @if ($selectedCategory(null)) text-orange @else text-black @endif font-bold hover:text-orange"
                              href="{{ route('catalog') }}">Каталог</a></li>
         @foreach($categories as $category)
