@@ -9,11 +9,11 @@
 
 ## Старт программы
 Консольные команды:
-npm install
-npm run build
-php composer install
-php artisan migrate:refresh --seed
-php artisan serve
+- npm install
+- npm run build
+- php composer install
+- php artisan migrate:refresh --seed
+- php artisan serve
 
 
 ## About Laravel
